@@ -6,7 +6,8 @@ from random import randint
 
 debugger = True
 show_hitboxes = False
-bullet_dim = 6
+bullet_dim = 10
+player_dim = 64
 
 def random_bullets(num_of_bullets=256):
 	for i in range(0, num_of_bullets):
@@ -57,7 +58,7 @@ if __name__ == "__main__":
 	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 	game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN|HWSURFACE|HWACCEL)
 
-	player_sprite_default = pygame.image.load("sprites/players/player.png")
+	player_sprite_default = pygame.transform.scale(pygame.image.load("sprites/players/player.png"), (player_dim, player_dim))
 	player_sprite = None
 	player_x, player_y = pygame.display.Info().current_w // 2 - player_sprite_default.get_width() // 2, pygame.display.Info().current_h // 2 - player_sprite_default.get_height() // 2
 	player_angle = 0
@@ -104,7 +105,7 @@ if __name__ == "__main__":
 		pygame.Surface.blit(game_window, player_sprite,
 							(player_x - player_sprite.get_width() // 2, player_y - player_sprite.get_height() // 2))
 		for bullet in bullet_list:
-			pygame.Surface.blit(game_window, bullet_sprite, (bullet[0], bullet[1]))
+			pygame.Surface.blit(game_window, pygame.transform.rotate(bullet_sprite, bullet[2]), (bullet[0], bullet[1]))
 		if show_hitboxes:
 			pygame.draw.rect(game_window, (255, 255, 0),
 							 (player_x - player_sprite.get_width() // 2, player_y - player_sprite.get_height() // 2,
