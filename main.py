@@ -1,14 +1,13 @@
 import pygame
 from pygame.locals import *
 import math
-import sys
 from random import randint, random
 
 debugger = False
 show_hitboxes = False
 bullet_dim = 8
-player_dim = 32
-num_of_particles = 128
+player_dim = 64
+num_of_particles = randint(100, 350)
 
 
 def random_bullets(num_of_bullets=256):
@@ -56,7 +55,7 @@ def fire():
         bullet[1] -= math.cos(math.radians(bullet[2])) * delta_time * bullet_speed
 
 
-def draw__background_particles(num_of_particles=num_of_particles):
+def draw_background_particles(num_of_particles=num_of_particles):
     for particle in particles:
         if particle[0] > GAME_WIDTH:
             particles.remove(particle)
@@ -64,6 +63,21 @@ def draw__background_particles(num_of_particles=num_of_particles):
                   (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0])
         pygame.draw.rect(game_window, particle[3], (particle[0], particle[1], particle[2], particle[2]))
         particle[0] += particle[4]
+
+
+def draw_background_planet():
+    global planet_x
+    global planet_y
+    global planet_dim
+    global planet_color
+    global planet_speed
+    if planet_x > GAME_WIDTH + planet_dim:
+        planet_dim = randint(36, 400)
+        planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
+        planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
+        planet_speed = random() * 1.2
+    pygame.draw.circle(game_window, planet_color, (planet_x, planet_y), planet_dim)
+    planet_x += math.ceil(planet_speed)
 
 
 if __name__ == "__main__":
@@ -81,12 +95,18 @@ if __name__ == "__main__":
     player_sprite = None
     player_x, player_y = pygame.display.Info().current_w // 2 - player_sprite_default.get_width() // 2, pygame.display.Info().current_h // 2 - player_sprite_default.get_height() // 2
     player_angle = 0
-    player_speed = 1000
+    player_speed = 1250
+
+    planet_dim = randint(36, 400)
+    planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
+    planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
+    planet_speed = random() * 1.2
+
 
     bg_sprite = pygame.transform.scale(pygame.image.load("sprites/environment/bg.jpg"), (GAME_WIDTH, GAME_HEIGHT))
 
     bullet_sprite = pygame.transform.scale(pygame.image.load("sprites/objects/bullet.png"), (bullet_dim, bullet_dim))
-    bullet_speed = 1000
+    bullet_speed = 1750
     bullet_list = []
 
     FPS = 240
@@ -121,7 +141,8 @@ if __name__ == "__main__":
 
         # Display Update
         pygame.Surface.fill(game_window, (0, 0, 0))
-        draw__background_particles()
+        draw_background_planet()
+        draw_background_particles()
         # pygame.Surface.blit(game_window, bg_sprite, (0, 0))
         player_sprite = pygame.transform.rotate(player_sprite_default, player_angle)
         pygame.Surface.blit(game_window, player_sprite,
@@ -137,6 +158,8 @@ if __name__ == "__main__":
             pygame.draw.rect(game_window, (255, 255, 0),
                              (player_x - player_sprite.get_width() // 2, player_y - player_sprite.get_height() // 2,
                               player_sprite.get_width(), player_sprite.get_height()), 1)
+            pygame.draw.rect(game_window, (255, 255, 0),
+                             (planet_x - planet_dim, planet_y - planet_dim, planet_dim * 2, planet_dim * 2), 1)
 
         pygame.display.flip()
 
