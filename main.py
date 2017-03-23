@@ -6,12 +6,13 @@ from pygame.locals import *
 import math
 from random import randint, random
 
-debugger = False
+debugger = True
 show_hitboxes = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
-num_of_enemies = randint(2, 4)
+num_of_enemies = randint(4, 7)
+score = 0
 
 
 def calc_player_angle_by_mouse_pos():
@@ -95,23 +96,41 @@ def draw_enemies():
 
 
 def check_collision():
+    global score
     for enemy in enemies:
         for bullet in bullet_list:
             if bullet[0] > enemy[1] and bullet[0] < enemy[1] + enemy[0].get_width() and bullet[1] > enemy[2] and bullet[1] < enemy[2] + enemy[0].get_height():
                 try:
                     enemies.remove(enemy)
-
-                # TODO increment game score
-
-                    enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-                                    randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None])
                 except:
                     pass
+
+                score += 1
+                if len(enemies) < num_of_enemies:
+                    enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
+                                    randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None])
+
+
+def draw_statistics():
+    pygame.Surface.blit(game_window, text_renderer.render("FPS: " + str(clock.get_fps()), True, (0, 255, 0)),
+                        (20, 22))
+    pygame.Surface.blit(game_window, text_renderer.render("Num of bg particles: " + str(len(particles)), True, (0, 255, 0)), (20, 22*2))
+    pygame.Surface.blit(game_window, text_renderer.render("Num of enemies: " + str(len(enemies)), True, (0, 255, 0)), (20, 22*3))
+    pygame.Surface.blit(game_window,
+                        text_renderer.render("Player coords: (" + str(player_x) + "; " + str(player_y) + ")", True,
+                                             (0, 255, 0)), (20, 22 * 4))
+
+    pygame.Surface.blit(game_window,
+                        text_renderer.render("Mouse coords " + str(mouse_pos), True, (0, 255, 0)),
+                        (20, 22 * 5))
+    pygame.Surface.blit(game_window, text_renderer.render("Live bullets: " + str(len(bullet_list)), True, (0, 255, 0)), (20, 22*6))
 
 
 if __name__ == "__main__":
 
     pygame.init()
+    pygame.font.init()
+
 
     RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
     game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN | HWSURFACE | HWACCEL)
@@ -143,6 +162,8 @@ if __name__ == "__main__":
     bullet_sprite = pygame.transform.scale(pygame.image.load("sprites/objects/bullet.png"), (bullet_dim, bullet_dim))
     bullet_speed = 1750
     bullet_list = []
+
+    text_renderer = pygame.font.Font('fonts/FallingSky.otf', 25)
 
     FPS = 240
     clock = pygame.time.Clock()
@@ -201,6 +222,11 @@ if __name__ == "__main__":
             for enemy in enemies:
                 pygame.draw.rect(game_window, (255, 255, 0),
                                  (enemy[1], enemy[2], enemy[0].get_width(), enemy[0].get_height()), 1)
+        score_text = text_renderer.render("SCORE: " + str(score), True, (0, 255, 0))
+        pygame.Surface.blit(game_window, score_text, (GAME_WIDTH // 2 - score_text.get_width() // 2, GAME_HEIGHT - 20 - score_text.get_height()))
+
+        if debugger:
+            draw_statistics()
 
         pygame.display.flip()
 
