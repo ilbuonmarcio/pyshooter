@@ -7,7 +7,7 @@ import math
 from random import randint, random
 
 debugger = False
-show_hitboxes = True
+show_hitboxes = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
