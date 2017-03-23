@@ -1,10 +1,13 @@
+# developer: marcioz98
+# email: marciozgaming@gmail.com
+
 import pygame
 from pygame.locals import *
 import math
 from random import randint, random
 
 debugger = False
-show_hitboxes = False
+show_hitboxes = True
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
@@ -177,6 +180,9 @@ if __name__ == "__main__":
                               player_sprite.get_width(), player_sprite.get_height()), 1)
             pygame.draw.rect(game_window, (255, 255, 0),
                              (planet_x - planet_dim, planet_y - planet_dim, planet_dim * 2, planet_dim * 2), 1)
+            for enemy in enemies:
+                pygame.draw.rect(game_window, (255, 255, 0),
+                                 (enemy[1], enemy[2], enemy[0].get_width(), enemy[0].get_height()), 1)
 
         pygame.display.flip()
 
