@@ -8,7 +8,7 @@ from random import randint, random
 
 debugger = True
 show_hitboxes = False
-extreme_mode = True
+extreme_mode = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
