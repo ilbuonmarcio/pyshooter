@@ -8,6 +8,7 @@ from random import randint, random
 
 debugger = True
 show_hitboxes = False
+extreme_mode = True
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
@@ -97,6 +98,7 @@ def draw_enemies():
 
 def check_collision():
     global score
+    global num_of_enemies
     for enemy in enemies:
         for bullet in bullet_list:
             if bullet[0] > enemy[1] and bullet[0] < enemy[1] + enemy[0].get_width() and bullet[1] > enemy[2] and bullet[1] < enemy[2] + enemy[0].get_height():
@@ -109,6 +111,8 @@ def check_collision():
                 if len(enemies) < num_of_enemies:
                     enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
                                     randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None])
+                    if extreme_mode:
+                        num_of_enemies += 1
 
 
 def draw_statistics():
