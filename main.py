@@ -168,6 +168,7 @@ if __name__ == "__main__":
     bullet_list = []
 
     text_renderer = pygame.font.Font('fonts/FallingSky.otf', 25)
+    big_text_renderer = pygame.font.Font('fonts\FallingSky.otf', 50)
 
     FPS = 240
     clock = pygame.time.Clock()
@@ -226,7 +227,7 @@ if __name__ == "__main__":
             for enemy in enemies:
                 pygame.draw.rect(game_window, (255, 255, 0),
                                  (enemy[1], enemy[2], enemy[0].get_width(), enemy[0].get_height()), 1)
-        score_text = text_renderer.render("SCORE: " + str(score), True, (0, 255, 0))
+        score_text = big_text_renderer.render("SCORE: " + str(score), True, (0, 255, 0))
         pygame.Surface.blit(game_window, score_text, (GAME_WIDTH // 2 - score_text.get_width() // 2, GAME_HEIGHT - 20 - score_text.get_height()))
 
         if debugger:
