@@ -56,7 +56,7 @@ def draw_background_particles(num_of_particles=num_of_particles):
         if particle[0] > GAME_WIDTH:
             particles.remove(particle)
             particles.append([0, randint(0, GAME_HEIGHT), randint(1, 3),
-                  (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0])
+                              (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0])
         pygame.draw.rect(game_window, particle[3], (particle[0], particle[1], particle[2], particle[2]))
         particle[0] += particle[4]
 
@@ -74,6 +74,7 @@ def draw_background_planet():
         planet_speed = random() * 1.2
     pygame.draw.circle(game_window, planet_color, (planet_x, planet_y), planet_dim)
     planet_x += math.ceil(planet_speed)
+
 
 def draw_enemies():
     for enemy in enemies:
@@ -93,6 +94,21 @@ def draw_enemies():
         pygame.Surface.blit(game_window, enemy[0], (enemy[1], enemy[2]))
 
 
+def check_collision():
+    for enemy in enemies:
+        for bullet in bullet_list:
+            if bullet[0] > enemy[1] and bullet[0] < enemy[1] + enemy[0].get_width() and bullet[1] > enemy[2] and bullet[1] < enemy[2] + enemy[0].get_height():
+                try:
+                    enemies.remove(enemy)
+
+                # TODO increment game score
+
+                    enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
+                                    randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None])
+                except:
+                    pass
+
+
 if __name__ == "__main__":
 
     pygame.init()
@@ -101,12 +117,14 @@ if __name__ == "__main__":
     game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN | HWSURFACE | HWACCEL)
 
     particles = [[randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(1, 3),
-                  (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in range(0, num_of_particles)]
+                  (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in
+                 range(0, num_of_particles)]
 
     enemy_sprite = pygame.image.load("sprites/objects/enemy.png")
 
     enemies = [[pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-                randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None] for _ in range(0, num_of_enemies)]
+                randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None] for _ in
+               range(0, num_of_enemies)]
 
     player_sprite_default = pygame.transform.scale(pygame.image.load("sprites/players/player.png"),
                                                    (player_dim, player_dim))
@@ -119,7 +137,6 @@ if __name__ == "__main__":
     planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
     planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
     planet_speed = random() * 1.2
-
 
     bg_sprite = pygame.transform.scale(pygame.image.load("sprites/environment/bg.jpg"), (GAME_WIDTH, GAME_HEIGHT))
 
@@ -156,6 +173,7 @@ if __name__ == "__main__":
         calc_player_angle_by_mouse_pos()
         reset_player_under_area()
         fire()
+        check_collision()
 
         # Display Update
         pygame.Surface.fill(game_window, (0, 0, 0))
