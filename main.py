@@ -104,6 +104,7 @@ def check_collision():
             if bullet[0] > enemy[1] and bullet[0] < enemy[1] + enemy[0].get_width() and bullet[1] > enemy[2] and bullet[1] < enemy[2] + enemy[0].get_height():
                 try:
                     enemies.remove(enemy)
+                    # TODO remove also the bullet that caused this kill
                 except:
                     pass
 
@@ -113,6 +114,10 @@ def check_collision():
                                     randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None])
                     if extreme_mode:
                         num_of_enemies += 1
+
+def check_if_dead():
+    # TODO check if player is colliding with some enemies, if so, end the game...
+    pass
 
 
 def draw_statistics():
