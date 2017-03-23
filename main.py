@@ -8,14 +8,7 @@ show_hitboxes = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
-
-
-def random_bullets(num_of_bullets=256):
-    for i in range(0, num_of_bullets):
-        x, y = randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT)
-        pygame.Surface.blit(game_window, bullet_sprite, (x, y))
-        if show_hitboxes:
-            pygame.draw.rect(game_window, (255, 255, 0), [x, y, bullet_sprite.get_width(), bullet_sprite.get_height()], 1)
+num_of_enemies = randint(2, 4)
 
 
 def calc_player_angle_by_mouse_pos():
@@ -79,6 +72,23 @@ def draw_background_planet():
     pygame.draw.circle(game_window, planet_color, (planet_x, planet_y), planet_dim)
     planet_x += math.ceil(planet_speed)
 
+def draw_enemies():
+    for enemy in enemies:
+        adiacent = enemy[1] - player_x
+        opposite = enemy[2] - player_y
+        try:
+            if opposite <= 0:
+                enemy[4] = 180 + math.degrees(math.atan(adiacent / opposite))
+            else:
+                enemy[4] = math.degrees(math.atan(adiacent / opposite))
+        except:
+            enemy[4] = 0
+
+        enemy[1] -= math.sin(math.radians(enemy[4])) * delta_time * enemy[3]
+        enemy[2] -= math.cos(math.radians(enemy[4])) * delta_time * enemy[3]
+
+        pygame.Surface.blit(game_window, enemy[0], (enemy[1], enemy[2]))
+
 
 if __name__ == "__main__":
 
@@ -89,6 +99,11 @@ if __name__ == "__main__":
 
     particles = [[randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(1, 3),
                   (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in range(0, num_of_particles)]
+
+    enemy_sprite = pygame.image.load("sprites/objects/enemy.png")
+
+    enemies = [[pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
+                randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None] for _ in range(0, num_of_enemies)]
 
     player_sprite_default = pygame.transform.scale(pygame.image.load("sprites/players/player.png"),
                                                    (player_dim, player_dim))
@@ -147,6 +162,8 @@ if __name__ == "__main__":
         player_sprite = pygame.transform.rotate(player_sprite_default, player_angle)
         pygame.Surface.blit(game_window, player_sprite,
                             (player_x - player_sprite.get_width() // 2, player_y - player_sprite.get_height() // 2))
+
+        draw_enemies()
 
         for bullet in bullet_list:
             pygame.Surface.blit(game_window, pygame.transform.rotate(bullet_sprite, bullet[2]), (bullet[0], bullet[1]))
