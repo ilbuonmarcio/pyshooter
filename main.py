@@ -4,7 +4,7 @@
 import pygame
 from pygame.locals import *
 import math
-from random import randint, random
+from random import randint, random, choice
 
 debugger = True
 show_hitboxes = False
@@ -12,7 +12,7 @@ extreme_mode = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
-num_of_enemies = randint(4, 7)
+num_of_enemies = randint(7, 15)
 score = 0
 final_score = None
 
@@ -63,6 +63,15 @@ def draw_background_particles():
         pygame.draw.rect(game_window, particle[3], (particle[0], particle[1], particle[2], particle[2]))
         particle[0] += particle[4]
 
+def draw_player_back_fire():
+    global player_back_fire_particles
+    player_back_fire_particles.remove(player_back_fire_particles[len(player_back_fire_particles) - 1])
+    player_back_fire_particles.insert(0, [player_x, player_y, player_angle])
+    for particle in player_back_fire_particles:
+        scaled = pygame.transform.scale(fire_sprite, (16-player_back_fire_particles.index(particle), 16-player_back_fire_particles.index(particle)))
+        rotated = pygame.transform.rotate(scaled, particle[2])
+        pygame.Surface.blit(game_window, rotated, (particle[0], particle[1]))
+
 
 def draw_background_planet():
     global planet_x
@@ -112,7 +121,7 @@ def check_collision():
                 score += 1
                 if len(enemies) < num_of_enemies:
                     enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-                                    randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None])
+                                    choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None])
                     if extreme_mode:
                         num_of_enemies += 1
 
@@ -160,8 +169,7 @@ if __name__ == "__main__":
     enemy_sprite = pygame.image.load("sprites/objects/enemy.png")
 
     enemies = [[pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-                randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(200, 300), None] for _ in
-               range(0, num_of_enemies)]
+                choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None] for _ in range(0, num_of_enemies)]
 
     player_sprite_default = pygame.transform.scale(pygame.image.load("sprites/players/player.png"),
                                                    (player_dim, player_dim))
@@ -169,6 +177,9 @@ if __name__ == "__main__":
     player_x, player_y = pygame.display.Info().current_w // 2 - player_sprite_default.get_width() // 2, pygame.display.Info().current_h // 2 - player_sprite_default.get_height() // 2
     player_angle = 0
     player_speed = 1250
+
+    fire_sprite = pygame.image.load("sprites/objects/fire.png")
+    player_back_fire_particles = [[player_x, player_y, player_angle] for _ in range(0, 16)]
 
     planet_dim = randint(36, 400)
     planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
@@ -228,6 +239,7 @@ if __name__ == "__main__":
             draw_background_particles()
         # pygame.Surface.blit(game_window, bg_sprite, (0, 0))
         player_sprite = pygame.transform.rotate(player_sprite_default, player_angle)
+        draw_player_back_fire()
         pygame.Surface.blit(game_window, player_sprite,
                             (player_x - player_sprite.get_width() // 2, player_y - player_sprite.get_height() // 2))
 
