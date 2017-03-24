@@ -136,6 +136,11 @@ def check_if_dead():
                 final_score = score
 
 
+def draw_shooting_stars():
+    # TODO draw shooting stars from any angle to any angle
+    pass
+
+
 def draw_statistics():
     pygame.Surface.blit(game_window, text_renderer.render("FPS: " + str(clock.get_fps()), True, (0, 255, 0)),
                         (20, 22))
