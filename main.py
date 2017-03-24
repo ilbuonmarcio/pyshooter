@@ -110,6 +110,7 @@ def check_collision():
     global score
     global num_of_enemies
     for enemy in enemies:
+        enemy[3] += 0.5
         for bullet in bullet_list:
             if bullet[0] > enemy[1] and bullet[0] < enemy[1] + enemy[0].get_width() and bullet[1] > enemy[2] and bullet[1] < enemy[2] + enemy[0].get_height():
                 try:
