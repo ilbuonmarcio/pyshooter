@@ -6,7 +6,7 @@ from pygame.locals import *
 import math
 from random import randint, random
 
-debugger = False
+debugger = True
 show_hitboxes = False
 extreme_mode = False
 bullet_dim = 8
@@ -141,7 +141,7 @@ def draw_statistics():
     pygame.Surface.blit(game_window, text_renderer.render("Live bullets: " + str(len(bullet_list)), True, (0, 255, 0)),
                         (20, 22 * 6))
     pygame.Surface.blit(game_window, text_renderer.render("Game ended: " + str(game_ended), True, (0, 255, 0)),
-                        (20, 22 * 6))
+                        (20, 22 * 7))
 
 
 if __name__ == "__main__":
@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
 
     RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
-    game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN | HWSURFACE | HWACCEL)
+    game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
 
     particles = [[randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(1, 3),
                   (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in
@@ -261,4 +261,4 @@ if __name__ == "__main__":
         if debugger:
             draw_statistics()
 
-        pygame.display.flip()
+        pygame.display.update()
