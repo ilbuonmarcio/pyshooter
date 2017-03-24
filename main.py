@@ -6,7 +6,7 @@ from pygame.locals import *
 import math
 from random import randint, random
 
-debugger = True
+debugger = False
 show_hitboxes = False
 extreme_mode = False
 bullet_dim = 8
@@ -14,6 +14,7 @@ player_dim = 64
 num_of_particles = randint(100, 350)
 num_of_enemies = randint(4, 7)
 score = 0
+final_score = None
 
 
 def calc_player_angle_by_mouse_pos():
@@ -53,7 +54,7 @@ def fire():
         bullet[1] -= math.cos(math.radians(bullet[2])) * delta_time * bullet_speed
 
 
-def draw_background_particles(num_of_particles=num_of_particles):
+def draw_background_particles():
     for particle in particles:
         if particle[0] > GAME_WIDTH:
             particles.remove(particle)
@@ -93,7 +94,7 @@ def draw_enemies():
         enemy[1] -= math.sin(math.radians(enemy[4])) * delta_time * enemy[3]
         enemy[2] -= math.cos(math.radians(enemy[4])) * delta_time * enemy[3]
 
-        pygame.Surface.blit(game_window, enemy[0], (enemy[1], enemy[2]))
+        pygame.Surface.blit(game_window, pygame.transform.rotate(enemy[0], enemy[4]), (enemy[1], enemy[2]))
 
 
 def check_collision():
@@ -104,7 +105,7 @@ def check_collision():
             if bullet[0] > enemy[1] and bullet[0] < enemy[1] + enemy[0].get_width() and bullet[1] > enemy[2] and bullet[1] < enemy[2] + enemy[0].get_height():
                 try:
                     enemies.remove(enemy)
-                    # TODO remove also the bullet that caused this kill
+                    bullet_list.remove(bullet)
                 except:
                     pass
 
@@ -116,8 +117,13 @@ def check_collision():
                         num_of_enemies += 1
 
 def check_if_dead():
-    # TODO check if player is colliding with some enemies, if so, end the game...
-    pass
+    global game_ended
+    global final_score
+    for enemy in enemies:
+        if player_x >= enemy[1] and player_x <= enemy[1] + enemy[0].get_width() and player_y >= enemy[2] and player_y <= enemy[2] + enemy[0].get_width():
+            game_ended = True
+            if final_score == None:
+                final_score = score
 
 
 def draw_statistics():
@@ -132,7 +138,10 @@ def draw_statistics():
     pygame.Surface.blit(game_window,
                         text_renderer.render("Mouse coords " + str(mouse_pos), True, (0, 255, 0)),
                         (20, 22 * 5))
-    pygame.Surface.blit(game_window, text_renderer.render("Live bullets: " + str(len(bullet_list)), True, (0, 255, 0)), (20, 22*6))
+    pygame.Surface.blit(game_window, text_renderer.render("Live bullets: " + str(len(bullet_list)), True, (0, 255, 0)),
+                        (20, 22 * 6))
+    pygame.Surface.blit(game_window, text_renderer.render("Game ended: " + str(game_ended), True, (0, 255, 0)),
+                        (20, 22 * 6))
 
 
 if __name__ == "__main__":
@@ -173,23 +182,28 @@ if __name__ == "__main__":
     bullet_list = []
 
     text_renderer = pygame.font.Font('fonts/FallingSky.otf', 25)
-    big_text_renderer = pygame.font.Font('fonts\FallingSky.otf', 50)
+    big_text_renderer = pygame.font.Font('fonts/FallingSky.otf', 50)
+    end_text_renderer = pygame.font.Font('fonts/FallingSky.otf', GAME_WIDTH // 6)
+
+    end_text = end_text_renderer.render("GAME OVER!", True, (0, 255, 0))
 
     FPS = 240
     clock = pygame.time.Clock()
     game_ended = False
     pygame.key.set_repeat(10, 10)
-    while not game_ended:
+    while True:
 
         delta_time = clock.tick(FPS) / 1000.0
 
         # Event Handling
         for event in pygame.event.get():
             if event.type == QUIT:
-                game_ended = True
+                pygame.quit()
+                exit()
             if event.type == KEYDOWN:
                 if event.key == K_F4 or event.key == K_ESCAPE:
-                    game_ended = True
+                    pygame.quit()
+                    exit()
                 if event.key == K_w:
                     player_y -= player_speed * delta_time
                 if event.key == K_a:
@@ -205,11 +219,13 @@ if __name__ == "__main__":
         reset_player_under_area()
         fire()
         check_collision()
+        check_if_dead()
 
         # Display Update
         pygame.Surface.fill(game_window, (0, 0, 0))
         draw_background_planet()
-        draw_background_particles()
+        if not game_ended:
+            draw_background_particles()
         # pygame.Surface.blit(game_window, bg_sprite, (0, 0))
         player_sprite = pygame.transform.rotate(player_sprite_default, player_angle)
         pygame.Surface.blit(game_window, player_sprite,
@@ -235,9 +251,14 @@ if __name__ == "__main__":
         score_text = big_text_renderer.render("SCORE: " + str(score), True, (0, 255, 0))
         pygame.Surface.blit(game_window, score_text, (GAME_WIDTH // 2 - score_text.get_width() // 2, GAME_HEIGHT - 20 - score_text.get_height()))
 
+        if game_ended:
+            pygame.Surface.fill(game_window, (0, 0, 0))
+            draw_background_particles()
+            pygame.Surface.blit(game_window, end_text, (GAME_WIDTH // 2 - end_text.get_width() // 2, GAME_HEIGHT // 2 - end_text.get_height() // 2))
+            final_score_text = big_text_renderer.render("Final score: " + str(final_score), True, (0, 255, 0))
+            pygame.Surface.blit(game_window, final_score_text, (GAME_WIDTH // 2 - final_score_text.get_width() // 2, GAME_HEIGHT // 2 - final_score_text.get_height() // 2 + end_text.get_height() // 2))
+
         if debugger:
             draw_statistics()
 
         pygame.display.flip()
-
-    pygame.quit()
