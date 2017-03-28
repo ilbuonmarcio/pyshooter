@@ -8,11 +8,12 @@ from random import randint, random, choice
 
 debugger = True
 show_hitboxes = False
-extreme_mode = False
+extreme_mode = True
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
 num_of_enemies = randint(7, 15)
+num_of_shooting_stars = 3
 score = 0
 final_score = None
 
@@ -137,8 +138,13 @@ def check_if_dead():
 
 
 def draw_shooting_stars():
-    # TODO draw shooting stars from any angle to any angle
-    pass
+    for particle in shooting_stars:
+        if particle[0] > GAME_WIDTH:
+            shooting_stars.remove(particle)
+            shooting_stars.append([0, randint(0, GAME_HEIGHT), randint(14, 27),
+                  (randint(225, 255), randint(225, 255), randint(225, 255)), random() * 15.0])
+        pygame.draw.rect(game_window, particle[3], (particle[0], particle[1], particle[2], particle[2]))
+        particle[0] += particle[4]
 
 
 def draw_statistics():
@@ -171,6 +177,10 @@ if __name__ == "__main__":
     particles = [[randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(1, 3),
                   (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in
                  range(0, num_of_particles)]
+
+    shooting_stars = [[0, randint(0, GAME_HEIGHT), randint(14, 27),
+                  (randint(225, 255), randint(225, 255), randint(225, 255)), random() * 15.0] for _ in
+                 range(0, num_of_shooting_stars)]
 
     enemy_sprite = pygame.image.load("sprites/objects/enemy.png")
 
@@ -241,6 +251,7 @@ if __name__ == "__main__":
         # Display Update
         pygame.Surface.fill(game_window, (0, 0, 0))
         draw_background_planet()
+        draw_shooting_stars()
         if not game_ended:
             draw_background_particles()
         # pygame.Surface.blit(game_window, bg_sprite, (0, 0))
