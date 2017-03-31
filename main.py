@@ -47,8 +47,8 @@ def reset_player_under_area():
 		player_y = GAME_HEIGHT - 20 - player_sprite_default.get_height()
 
 
-def fire():
-	if pygame.mouse.get_pressed()[0]:
+def fire(joystick_fire=False):
+	if pygame.mouse.get_pressed()[0] or joystick_fire:
 		bullet_list.append([player_x, player_y, player_angle])
 	for bullet in bullet_list:
 		if bullet[0] < 0 or bullet[0] > GAME_WIDTH or bullet[1] < 0 or bullet[1] > GAME_HEIGHT:
@@ -165,13 +165,22 @@ def draw_statistics():
 						(20, 22 * 6))
 	pygame.Surface.blit(game_window, text_renderer.render("Game ended: " + str(game_ended), True, (0, 255, 0)),
 						(20, 22 * 7))
+	if joysticks != []:
+		pygame.Surface.blit(game_window, text_renderer.render(joysticks[0].get_name() + " enabled!", True, (0, 255, 0)),
+						(20, 22 * 8))
 
 
 if __name__ == "__main__":
 
 	pygame.init()
 	pygame.font.init()
-
+	joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+	if joysticks != []:
+		joysticks[0].init()
+		enable_joystick_mode = True
+		# print(joysticks[0].get_name(), "enabled!")
+	else:
+		enable_joystick_mode = False
 
 	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 	game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
@@ -210,6 +219,8 @@ if __name__ == "__main__":
 	bullet_speed = 1750
 	bullet_list = []
 
+	joystick_fire = None
+
 	text_renderer = pygame.font.Font('fonts/FallingSky.otf', 25)
 	big_text_renderer = pygame.font.Font('fonts/FallingSky.otf', 50)
 	end_text_renderer = pygame.font.Font('fonts/FallingSky.otf', GAME_WIDTH // 6)
@@ -241,6 +252,21 @@ if __name__ == "__main__":
 					s_pressed = True
 				if event.key == K_d:
 					d_pressed = True
+			if event.type == JOYAXISMOTION:
+				if event.axis == 1:
+					if event.value > 0.5:
+						s_pressed = True
+					elif event.value < -0.5:
+						w_pressed = True
+					else:
+						s_pressed, w_pressed = False, False
+				elif event.axis == 0:
+					if event.value > 0.5:
+						d_pressed = True
+					elif event.value < -0.5:
+						a_pressed = True
+					else:
+						a_pressed, d_pressed = False, False
 			if event.type == KEYUP:
 				if event.key == K_w:
 					w_pressed = False
@@ -254,7 +280,7 @@ if __name__ == "__main__":
 		mouse_pos = pygame.mouse.get_pos()
 		calc_player_angle_by_mouse_pos()
 		reset_player_under_area()
-		fire()
+		fire(joystick_fire)
 		check_collision()
 		check_if_dead()
 
