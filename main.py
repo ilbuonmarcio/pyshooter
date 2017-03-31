@@ -8,7 +8,7 @@ from random import randint, random, choice
 
 debugger = True
 show_hitboxes = False
-extreme_mode = True
+extreme_mode = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
@@ -69,7 +69,7 @@ def draw_player_back_fire():
     player_back_fire_particles.remove(player_back_fire_particles[len(player_back_fire_particles) - 1])
     player_back_fire_particles.insert(0, [player_x, player_y, player_angle])
     for particle in player_back_fire_particles:
-        scaled = pygame.transform.scale(fire_sprite, (16-player_back_fire_particles.index(particle), 16-player_back_fire_particles.index(particle)))
+        scaled = pygame.transform.scale(fire_sprite, (32-player_back_fire_particles.index(particle), 32-player_back_fire_particles.index(particle)))
         rotated = pygame.transform.rotate(scaled, particle[2])
         pygame.Surface.blit(game_window, rotated, (particle[0], particle[1]))
 
@@ -195,7 +195,7 @@ if __name__ == "__main__":
     player_speed = 1250
 
     fire_sprite = pygame.image.load("sprites/objects/fire.png")
-    player_back_fire_particles = [[player_x, player_y, player_angle] for _ in range(0, 16)]
+    player_back_fire_particles = [[player_x, player_y, player_angle] for _ in range(0, 32)]
 
     planet_dim = randint(36, 400)
     planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
