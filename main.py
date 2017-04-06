@@ -16,6 +16,7 @@ num_of_enemies = randint(7, 15)
 num_of_shooting_stars = 3
 score = 0
 final_score = None
+num_of_enemy_particles = 32
 
 w_pressed, a_pressed, s_pressed, d_pressed = False, False, False, False
 
@@ -93,7 +94,7 @@ def draw_background_planet():
 
 def draw_enemies():
 	for enemy in enemies:
-		if len(enemy[5]) >= 12:
+		if len(enemy[5]) >= num_of_enemy_particles:
 			del enemy[5][0]
 		enemy[5].append([enemy[1], enemy[2]])
 		adiacent = enemy[1] - player_x
