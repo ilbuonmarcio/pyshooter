@@ -93,6 +93,9 @@ def draw_background_planet():
 
 def draw_enemies():
 	for enemy in enemies:
+		if len(enemy[5]) >= 12:
+			del enemy[5][0]
+		enemy[5].append([enemy[1], enemy[2]])
 		adiacent = enemy[1] - player_x
 		opposite = enemy[2] - player_y
 		try:
@@ -105,6 +108,9 @@ def draw_enemies():
 
 		enemy[1] -= math.sin(math.radians(enemy[4])) * delta_time * enemy[3]
 		enemy[2] -= math.cos(math.radians(enemy[4])) * delta_time * enemy[3]
+
+		for fire in enemy[5]:
+			pygame.Surface.blit(game_window, pygame.transform.scale(fire_sprite, (48, 48)), (fire[0], fire[1]))
 
 		pygame.Surface.blit(game_window, pygame.transform.rotate(enemy[0], enemy[4]), (enemy[1], enemy[2]))
 
@@ -125,7 +131,7 @@ def check_collision():
 				score += 1
 				if len(enemies) < num_of_enemies:
 					enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-									choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None])
+									choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None, []])
 					if extreme_mode:
 						num_of_enemies += 1
 
@@ -196,7 +202,7 @@ if __name__ == "__main__":
 	enemy_sprite = pygame.image.load("sprites/objects/enemy.png")
 
 	enemies = [[pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-				choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None] for _ in range(0, num_of_enemies)]
+				choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None, []] for _ in range(0, num_of_enemies)]
 
 	player_sprite_default = pygame.transform.scale(pygame.image.load("sprites/players/player.png"),
 												   (player_dim, player_dim))
