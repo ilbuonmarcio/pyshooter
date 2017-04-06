@@ -111,7 +111,7 @@ def draw_enemies():
 		enemy[2] -= math.cos(math.radians(enemy[4])) * delta_time * enemy[3]
 
 		for fire in enemy[5]:
-			pygame.Surface.blit(game_window, pygame.transform.scale(fire_sprite, (48, 48)), (fire[0], fire[1]))
+			pygame.Surface.blit(game_window, pygame.transform.scale(fire_sprite, (enemy[5].index(fire), enemy[5].index(fire))), (fire[0], fire[1]))
 
 		pygame.Surface.blit(game_window, pygame.transform.rotate(enemy[0], enemy[4]), (enemy[1], enemy[2]))
 
