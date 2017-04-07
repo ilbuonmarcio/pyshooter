@@ -6,7 +6,7 @@ from pygame.locals import *
 import math
 from random import randint, random, choice
 
-debugger = True
+debugger = False
 show_hitboxes = False
 extreme_mode = False
 bullet_dim = 8
@@ -83,12 +83,15 @@ def draw_background_planet():
 	global planet_dim
 	global planet_color
 	global planet_speed
+	subplanet_color = (0, 0, 0)
 	if planet_x > GAME_WIDTH + planet_dim:
 		planet_dim = randint(36, 400)
 		planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
+		subplanet_color = (planet_color[0] + 120, planet_color[1] + 120, planet_color[2] + 120)
 		planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
 		planet_speed = random() * 1.2
 	pygame.draw.circle(game_window, planet_color, (planet_x, planet_y), planet_dim)
+	pygame.draw.circle(game_window, subplanet_color, (planet_x, planet_y), planet_dim // 3 * 2)
 	planet_x += math.ceil(planet_speed)
 
 
@@ -111,7 +114,7 @@ def draw_enemies():
 		enemy[2] -= math.cos(math.radians(enemy[4])) * delta_time * enemy[3]
 
 		for fire in enemy[5]:
-			pygame.Surface.blit(game_window, pygame.transform.scale(fire_sprite, (enemy[5].index(fire), enemy[5].index(fire))), (fire[0], fire[1]))
+			pygame.Surface.blit(game_window, pygame.transform.scale(fire_sprite, (enemy[5].index(fire), enemy[5].index(fire))), (fire[0] + (fire_sprite.get_width() // 2), fire[1] + (fire_sprite.get_height() // 2)))
 
 		pygame.Surface.blit(game_window, pygame.transform.rotate(enemy[0], enemy[4]), (enemy[1], enemy[2]))
 
