@@ -17,6 +17,7 @@ num_of_shooting_stars = 3
 score = 0
 final_score = None
 num_of_enemy_particles = 32
+bg_color = randint(0, 50), randint(0, 50), randint(0, 50)
 
 w_pressed, a_pressed, s_pressed, d_pressed = False, False, False, False
 
@@ -304,7 +305,7 @@ if __name__ == "__main__":
 			player_x += player_speed * delta_time
 
 		# Display Update
-		pygame.Surface.fill(game_window, (0, 0, 0))
+		pygame.Surface.fill(game_window, bg_color)
 		draw_background_planet()
 		draw_shooting_stars()
 		if not game_ended:
@@ -336,7 +337,7 @@ if __name__ == "__main__":
 		pygame.Surface.blit(game_window, score_text, (GAME_WIDTH // 2 - score_text.get_width() // 2, GAME_HEIGHT - 20 - score_text.get_height()))
 
 		if game_ended:
-			pygame.Surface.fill(game_window, (0, 0, 0))
+			pygame.Surface.fill(game_window, bg_color)
 			draw_background_particles()
 			pygame.Surface.blit(game_window, end_text, (GAME_WIDTH // 2 - end_text.get_width() // 2, GAME_HEIGHT // 2 - end_text.get_height() // 2))
 			final_score_text = big_text_renderer.render("Final score: " + str(final_score), True, (0, 255, 0))
