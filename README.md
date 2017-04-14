@@ -1,7 +1,9 @@
 # pyshooter
-- - -
+
+![Actual Screenshots](/screenshots/1.png)
+
 ### Requirements
-- Python
+- Python 2.x or 3.x
 - pygame
 
 ### Commands
@@ -11,4 +13,5 @@
 - W, A, S, D to change ship direction
 
 Hope you enjoy this little project!
+
 If you wanna contribute to this, i appreciate!
