@@ -13,7 +13,7 @@ bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
 num_of_enemies = randint(7, 15)
-num_of_shooting_stars = 3
+num_of_shooting_stars = 2
 score = 0
 final_score = None
 num_of_enemy_particles = 32
@@ -92,7 +92,7 @@ def draw_background_planet():
 		planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
 		planet_speed = random() * 1.2
 	pygame.draw.circle(game_window, planet_color, (planet_x, planet_y), planet_dim)
-	pygame.draw.circle(game_window, subplanet_color, (planet_x, planet_y), planet_dim // 3 * 2)
+	pygame.draw.circle(game_window, bg_color, (planet_x, planet_y), planet_dim // 3 * 2)
 	planet_x += math.ceil(planet_speed)
 
 
@@ -223,8 +223,6 @@ if __name__ == "__main__":
 	planet_color = (randint(35, 110), randint(35, 110), randint(35, 110))
 	planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
 	planet_speed = random() * 1.2
-
-	bg_sprite = pygame.transform.scale(pygame.image.load("sprites/environment/bg.jpg"), (GAME_WIDTH, GAME_HEIGHT))
 
 	bullet_sprite = pygame.transform.scale(pygame.image.load("sprites/objects/bullet.png"), (bullet_dim, bullet_dim))
 	bullet_speed = 1750
