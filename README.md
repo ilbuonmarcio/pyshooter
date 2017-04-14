@@ -1,6 +1,9 @@
 # pyshooter
 
 ![Actual Screenshots](/screenshots/1.png)
+![Actual Screenshots](/screenshots/2.png)
+![Actual Screenshots](/screenshots/3.png)
+![Actual Screenshots](/screenshots/4.png)
 
 ### Requirements
 - Python 2.x or 3.x
@@ -14,4 +17,4 @@
 
 Hope you enjoy this little project!
 
-If you wanna contribute to this, i appreciate!
+If you wanna contribute, I appreciate! Send me a pull request!
