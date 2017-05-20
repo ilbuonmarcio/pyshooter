@@ -91,8 +91,8 @@ def draw_background_planet():
 		subplanet_color = (planet_color[0] + 120, planet_color[1] + 120, planet_color[2] + 120)
 		planet_x, planet_y = 0 - planet_dim, randint(GAME_HEIGHT // 2, GAME_HEIGHT) - planet_dim
 		planet_speed = random() * 1.2
-	pygame.draw.circle(game_window, planet_color, (planet_x, planet_y), planet_dim)
-	pygame.draw.circle(game_window, bg_color, (planet_x, planet_y), planet_dim // 3 * 2)
+	pygame.draw.circle(game_window, planet_color, (int(planet_x), int(planet_y)), planet_dim)
+	pygame.draw.circle(game_window, bg_color, (int(planet_x), int(planet_y)), planet_dim // 3 * 2)
 	planet_x += math.ceil(planet_speed)
 
 
