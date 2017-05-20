@@ -21,6 +21,7 @@ score = 0
 final_score = None
 num_of_enemy_particles = 32
 bg_color = randint(0, 50), randint(0, 50), randint(0, 50)
+python_version = str(sys.version_info[0]) + "." + str(sys.version_info[1]) + "." + str(sys.version_info[2])
 
 w_pressed, a_pressed, s_pressed, d_pressed = False, False, False, False
 
@@ -179,9 +180,11 @@ def draw_statistics():
 						(20, 22 * 6))
 	pygame.Surface.blit(game_window, text_renderer.render("Game ended: " + str(game_ended), True, (0, 255, 0)),
 						(20, 22 * 7))
+	pygame.Surface.blit(game_window, text_renderer.render("Python version: " + python_version, True, (0, 255, 0)),
+						(20, 22 * 8))
 	if joysticks != []:
 		pygame.Surface.blit(game_window, text_renderer.render(joysticks[0].get_name() + " enabled!", True, (0, 255, 0)),
-						(20, 22 * 8))
+						(20, 22 * 9))
 
 
 if __name__ == "__main__":
