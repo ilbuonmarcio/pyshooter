@@ -5,8 +5,11 @@ import pygame
 from pygame.locals import *
 import math
 from random import randint, random, choice
+import sys
 
 debugger = False
+if "debug" in sys.argv:
+	debugger = True
 show_hitboxes = False
 extreme_mode = False
 bullet_dim = 8
