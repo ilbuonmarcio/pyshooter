@@ -15,7 +15,7 @@ extreme_mode = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
-num_of_enemies = randint(7, 15)
+num_of_enemies = 0 # randint(7, 15)
 num_of_shooting_stars = 2
 score = 0
 final_score = None
@@ -195,12 +195,13 @@ if __name__ == "__main__":
 	if joysticks != []:
 		joysticks[0].init()
 		enable_joystick_mode = True
+		move_mouse = 0, 0
 		# print(joysticks[0].get_name(), "enabled!")
 	else:
 		enable_joystick_mode = False
 
-	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
-	game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
+	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = 1280, 720 # pygame.display.Info().current_w, pygame.display.Info().current_h
+	game_window = pygame.display.set_mode(RESOLUTION) # , FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
 
 	particles = [[randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(1, 3),
 				  (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in
@@ -234,7 +235,8 @@ if __name__ == "__main__":
 	bullet_speed = 1750
 	bullet_list = []
 
-	joystick_fire = None
+	joystick_fire = False
+	joystick_aim_speed = 4
 
 	text_renderer = pygame.font.Font('fonts/FallingSky.otf', 25)
 	big_text_renderer = pygame.font.Font('fonts/FallingSky.otf', 50)
@@ -282,6 +284,25 @@ if __name__ == "__main__":
 						a_pressed = True
 					else:
 						a_pressed, d_pressed = False, False
+				elif event.axis == 5:
+					if event.value > -0.5:
+						joystick_fire = True
+					else:
+						joystick_fire = False
+				elif event.axis == 3: # Vertical axis
+					if event.value == 0.0:
+						move_mouse = 0, move_mouse[1]
+					if event.value < -0.15:
+						move_mouse = -joystick_aim_speed, move_mouse[1]
+					elif event.value > 0.15:
+						move_mouse = joystick_aim_speed, move_mouse[1]
+				elif event.axis == 4: # Horizontal axis
+					if event.value == 0.0:
+						move_mouse = move_mouse[0], 0
+					if event.value < -0.15:
+						move_mouse = move_mouse[0], -joystick_aim_speed
+					elif event.value > 0.15:
+						move_mouse = move_mouse[0], joystick_aim_speed
 			if event.type == KEYUP:
 				if event.key == K_w:
 					w_pressed = False
@@ -293,6 +314,20 @@ if __name__ == "__main__":
 					d_pressed = False
 		# Game Logic
 		mouse_pos = pygame.mouse.get_pos()
+		if enable_joystick_mode:
+			mouse_x, mouse_y = mouse_pos[0] + move_mouse[0],  mouse_pos[1] + move_mouse[1]
+			if mouse_pos[0] + move_mouse[0] < 20:
+				mouse_x = 20
+			if mouse_pos[0] + move_mouse[0] > GAME_WIDTH - 20:
+				mouse_x = GAME_WIDTH - 20
+			if mouse_pos[1] + move_mouse[1] < 20:
+				mouse_y = 20
+			if mouse_pos[1] + move_mouse[1] > GAME_HEIGHT - 20:
+				mouse_y = GAME_HEIGHT - 20
+
+			pygame.mouse.set_pos(mouse_x, mouse_y)
+
+		# print(pygame.mouse.get_pos())
 		calc_player_angle_by_mouse_pos()
 		reset_player_under_area()
 		fire(joystick_fire)
