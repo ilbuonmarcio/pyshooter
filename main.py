@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # developer: marcioz98
 # email: marciozgaming@gmail.com
 
@@ -15,7 +16,7 @@ extreme_mode = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
-num_of_enemies = 0 # randint(7, 15)
+num_of_enemies = randint(7, 15)
 num_of_shooting_stars = 2
 score = 0
 final_score = None
