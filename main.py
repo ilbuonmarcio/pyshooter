@@ -26,6 +26,32 @@ python_version = str(sys.version_info[0]) + "." + str(sys.version_info[1]) + "."
 
 w_pressed, a_pressed, s_pressed, d_pressed = False, False, False, False
 
+class Lagometer:
+
+	def __init__(self, WINDOW, CLOCK, GAME_RES, unit=2.0):
+		self.WINDOW = WINDOW
+		self.CLOCK = CLOCK
+		self.GAME_RES = GAME_RES
+		self.array = []
+		self.unit = unit
+		self.curr_x = 0
+		print(self.unit)
+
+	def show(self):
+		if len(self.array) > self.GAME_RES[0] / 2 / self.unit:
+			self.array.clear()
+			self.curr_x = 0
+		curr_fps = int(self.CLOCK.get_fps())
+		self.array.append([self.curr_x, self.GAME_RES[1] - curr_fps, self.unit, curr_fps])
+		self.curr_x += self.unit
+		for val in self.array:
+			if self.array.index(val) % 2 == 0:
+				pygame.draw.rect(self.WINDOW, (0, 255, 0), (val[0], val[1], val[2], val[3]))
+			else:
+				pygame.draw.rect(self.WINDOW, (0, 150, 0), (val[0], val[1], val[2], val[3]))
+
+
+
 
 def calc_player_angle_by_mouse_pos():
 	global player_sprite
@@ -201,8 +227,8 @@ if __name__ == "__main__":
 	else:
 		enable_joystick_mode = False
 
-	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = 1280, 720 # pygame.display.Info().current_w, pygame.display.Info().current_h
-	game_window = pygame.display.set_mode(RESOLUTION) # , FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
+	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
+	game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
 
 	particles = [[randint(0, GAME_WIDTH), randint(0, GAME_HEIGHT), randint(1, 3),
 				  (randint(200, 255), randint(200, 255), randint(200, 255)), random() * 5.0] for _ in
@@ -247,6 +273,9 @@ if __name__ == "__main__":
 
 	FPS = 240
 	clock = pygame.time.Clock()
+
+	lagometer = Lagometer(game_window, clock, RESOLUTION)
+
 	game_ended = False
 	pygame.key.set_repeat(10, 10)
 	while True:
@@ -385,5 +414,6 @@ if __name__ == "__main__":
 
 		if debugger:
 			draw_statistics()
+			lagometer.show()
 
 		pygame.display.update()
