@@ -227,6 +227,8 @@ if __name__ == "__main__":
 	else:
 		enable_joystick_mode = False
 
+	pygame.mixer.music.load("music/Rolemu_Neoakushon.mp3")
+
 	RESOLUTION = GAME_WIDTH, GAME_HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 	game_window = pygame.display.set_mode(RESOLUTION, FULLSCREEN|HWSURFACE|HWACCEL|DOUBLEBUF)
 
@@ -278,6 +280,7 @@ if __name__ == "__main__":
 
 	game_ended = False
 	pygame.key.set_repeat(10, 10)
+	pygame.mixer.music.play(loops=-1)
 	while True:
 
 		delta_time = clock.tick(FPS) / 1000.0
