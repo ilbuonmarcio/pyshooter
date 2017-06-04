@@ -9,8 +9,11 @@ from random import randint, random, choice
 import sys
 
 debugger = False
+lagometer = None
 if "debug" in sys.argv:
 	debugger = True
+	if "nolagom" in sys.argv:
+		lagometer = False
 show_hitboxes = False
 extreme_mode = False
 bullet_dim = 8
@@ -276,7 +279,8 @@ if __name__ == "__main__":
 	FPS = 240
 	clock = pygame.time.Clock()
 
-	lagometer = Lagometer(game_window, clock, RESOLUTION)
+	if lagometer != False:
+		lagometer = Lagometer(game_window, clock, RESOLUTION)
 
 	game_ended = False
 	pygame.key.set_repeat(10, 10)
@@ -417,6 +421,7 @@ if __name__ == "__main__":
 
 		if debugger:
 			draw_statistics()
-			lagometer.show()
+			if lagometer != False:
+				lagometer.show()
 
 		pygame.display.update()
