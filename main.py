@@ -31,7 +31,7 @@ w_pressed, a_pressed, s_pressed, d_pressed = False, False, False, False
 
 class Lagometer:
 
-	def __init__(self, WINDOW, CLOCK, GAME_RES, unit=2.0):
+	def __init__(self, WINDOW, CLOCK, GAME_RES, unit=1.0):
 		self.WINDOW = WINDOW
 		self.CLOCK = CLOCK
 		self.GAME_RES = GAME_RES
