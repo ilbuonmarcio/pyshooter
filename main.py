@@ -170,7 +170,7 @@ def check_collision():
 				score += 1
 				if len(enemies) < num_of_enemies:
 					enemies.append([pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-									choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None, []])
+									choice([-0.3, 1.3])*randint(GAME_WIDTH // 2, GAME_WIDTH), choice([-0.3, 1.3])*randint(GAME_WIDTH // 2, GAME_HEIGHT), randint(200, 300), None, []])
 					if extreme_mode:
 						num_of_enemies += 1
 
@@ -246,7 +246,7 @@ if __name__ == "__main__":
 	enemy_sprite = pygame.image.load("sprites/objects/enemy.png")
 
 	enemies = [[pygame.transform.scale(enemy_sprite, (randint(30, 60), randint(30, 60))),
-				choice([-0.3, 1.3])*randint(0, GAME_WIDTH), choice([-0.3, 1.3])*randint(0, GAME_HEIGHT), randint(200, 300), None, []] for _ in range(0, num_of_enemies)]
+				choice([-0.3, 1.3])*randint(GAME_WIDTH // 2, GAME_WIDTH), choice([-0.3, 1.3])*randint(GAME_HEIGHT // 2, GAME_HEIGHT), randint(200, 300), None, []] for _ in range(0, num_of_enemies)]
 
 	player_sprite_default = pygame.transform.scale(pygame.image.load("sprites/players/player.png"),
 												   (player_dim, player_dim))
@@ -284,6 +284,7 @@ if __name__ == "__main__":
 
 	game_ended = False
 	pygame.key.set_repeat(10, 10)
+	pygame.mixer.music.set_volume(0.02)
 	pygame.mixer.music.play(loops=-1)
 	while True:
 
