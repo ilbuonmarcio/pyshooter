@@ -38,7 +38,7 @@ class Lagometer:
 		self.array = []
 		self.unit = unit
 		self.curr_x = 0
-		print(self.unit)
+		# print(self.unit)
 
 	def show(self):
 		if len(self.array) > self.GAME_RES[0] / 2 / self.unit:
