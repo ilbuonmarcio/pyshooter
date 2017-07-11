@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+# !/usr/bin/python3
 # developer: marcioz98
 # email: marciozgaming@gmail.com
 
@@ -42,7 +42,7 @@ class Lagometer:
 
 	def show(self):
 		if len(self.array) > self.GAME_RES[0] / 2 / self.unit:
-			self.array.clear()
+			self.array = []
 			self.curr_x = 0
 		curr_fps = int(self.CLOCK.get_fps())
 		self.array.append([self.curr_x, self.GAME_RES[1] - curr_fps, self.unit, curr_fps])
@@ -275,6 +275,7 @@ if __name__ == "__main__":
 	end_text_renderer = pygame.font.Font('fonts/FallingSky.otf', GAME_WIDTH // 6)
 
 	end_text = end_text_renderer.render("GAME OVER!", True, (0, 255, 0))
+	end_text_coords = [GAME_WIDTH // 2 - end_text.get_width() // 2, GAME_HEIGHT // 2 - end_text.get_height() // 2]
 
 	FPS = 240
 	clock = pygame.time.Clock()
@@ -416,7 +417,7 @@ if __name__ == "__main__":
 		if game_ended:
 			pygame.Surface.fill(game_window, bg_color)
 			draw_background_particles()
-			pygame.Surface.blit(game_window, end_text, (GAME_WIDTH // 2 - end_text.get_width() // 2, GAME_HEIGHT // 2 - end_text.get_height() // 2))
+			pygame.Surface.blit(game_window, end_text, end_text_coords)
 			final_score_text = big_text_renderer.render("Final score: " + str(final_score), True, (0, 255, 0))
 			pygame.Surface.blit(game_window, final_score_text, (GAME_WIDTH // 2 - final_score_text.get_width() // 2, GAME_HEIGHT // 2 - final_score_text.get_height() // 2 + end_text.get_height() // 2))
 
