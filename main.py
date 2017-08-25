@@ -15,7 +15,10 @@ if "debug" in sys.argv:
 	if "nolagom" in sys.argv:
 		lagometer = False
 show_hitboxes = False
-extreme_mode = False
+if "extreme" in sys.argv:
+    extreme_mode = True
+else:
+    extreme_mode = False
 bullet_dim = 8
 player_dim = 64
 num_of_particles = randint(100, 350)
