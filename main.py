@@ -144,8 +144,6 @@ class GameLogicController:
 		exit()
 
 
-
-
 class EventController:
 	"""
 	Game's Event Controller
@@ -167,6 +165,7 @@ class EventController:
 			if event.type == KEYDOWN:
 				if event.key == K_F4 or event.key == K_ESCAPE:
 					self.game_controller.end_gameplay()
+
 
 class Enemy:
 	"""
