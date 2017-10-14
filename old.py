@@ -355,7 +355,7 @@ if __name__ == "__main__":
 		# Game Logic
 		mouse_pos = pygame.mouse.get_pos()
 		if enable_joystick_mode:
-			mouse_x, mouse_y = mouse_pos[0] + move_mouse[0],  mouse_pos[1] + move_mouse[1]
+			mouse_x, mouse_y = mouse_pos[0] + move_mouse[0]*2.5,  mouse_pos[1] + move_mouse[1]*2.5
 			if mouse_pos[0] + move_mouse[0] < 20:
 				mouse_x = 20
 			if mouse_pos[0] + move_mouse[0] > GAME_WIDTH - 20:
