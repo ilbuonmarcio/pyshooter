@@ -5,6 +5,12 @@ import random
 
 
 class Settings:
+	"""
+	Game Settings controller
+
+	It reads from a file and acts as a database
+	of informations in which the game supplies
+	"""
 
 	def __init__(self):
 		pass
@@ -15,6 +21,12 @@ class Settings:
 
 
 class Lagometer:
+	"""
+	Minecraft's lagometer python similar implementation
+
+	Simple graph that shows you information about
+	game's ingame performance
+	"""
 
 	def __init__(self):
 		pass
@@ -24,6 +36,11 @@ class Lagometer:
 
 
 class GameLogicController:
+	"""
+	Entire Game's Logic Controller
+
+	It handles all the game logic
+	"""
 
 	def __init__(self):
 		pass
@@ -33,6 +50,11 @@ class GameLogicController:
 
 
 class EventController:
+	"""
+	Game's Event Controller
+
+	It handles all the game events
+	"""
 
 	def __init__(self):
 		pass
@@ -42,6 +64,9 @@ class EventController:
 
 
 class Enemy:
+	"""
+	Enemy logical representation
+	"""
 
 	def __init__(self):
 		pass
@@ -51,6 +76,9 @@ class Enemy:
 
 
 class Player:
+	"""
+	Player logical representation
+	"""
 
 	def __init__(self, x, y):
 		self.x = x
@@ -75,7 +103,12 @@ class Player:
 		pass
 
 
-class VFX:
+class VFXController:
+	"""
+	Visual Effects Controller
+
+	From this you can decide to draw or not vfxs
+	"""
 
 	def __init__(self):
 		pass
