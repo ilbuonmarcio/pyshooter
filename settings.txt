@@ -1,0 +1,4 @@
+windowparameters;DOUBLEBUF|HWSURFACE|FULLSCREEN
+resolution;1920x1080
+fps;100
+gamecaption;pyshooter - marcioz98
