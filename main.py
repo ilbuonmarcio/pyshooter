@@ -107,7 +107,7 @@ class GameLogicController:
 		self.time_controller = TimeController()
 		self.event_controller.set_game_controller(self)
 		self.window = pygame.display
-		try:
+		try: # If it reads window properties right
 			self.surface = self.window.set_mode(
 				self.settings.get_resolution(),
 				self.settings.get_window_parameters()
@@ -123,15 +123,23 @@ class GameLogicController:
 		self.game_ended = False
 
 	def loop(self):
+		"""
+		Main Game Loop
+		"""
 		while not self.game_ended:
 
+			# Event Parsing
 			self.event_controller.parse_events()
 
-			self.time_controller.clock.tick(self.FPS)
+			# Game Logic Handling
 
+
+			# Surface Display Drawing
 			self.surface.fill((125, 125, 125))
 
+			# Display Updating 
 			self.window.update()
+			self.time_controller.clock.tick(self.FPS)
 
 			if self.game_ended:
 				self.close_game()
