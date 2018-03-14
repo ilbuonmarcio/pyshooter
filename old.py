@@ -213,9 +213,11 @@ def draw_statistics():
 						(20, 22 * 7))
 	pygame.Surface.blit(game_window, text_renderer.render("Python version: " + python_version, True, (0, 255, 0)),
 						(20, 22 * 8))
+	pygame.Surface.blit(game_window, text_renderer.render("Resolution: " + str(GAME_WIDTH) + "x" + str(GAME_HEIGHT), True, (0, 255, 0)),
+						(20, 22 * 9))
 	if joysticks != []:
 		pygame.Surface.blit(game_window, text_renderer.render(joysticks[0].get_name() + " enabled!", True, (0, 255, 0)),
-						(20, 22 * 9))
+						(20, 22 * 10))
 
 
 if __name__ == "__main__":
