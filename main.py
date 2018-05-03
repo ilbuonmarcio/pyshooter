@@ -11,7 +11,7 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 pygame.init()
 
-GAME_RES = WIDTH, HEIGHT = 1920, 1080
+GAME_RES = WIDTH, HEIGHT = int(pygame.display.Info().current_w * 0.7), int(pygame.display.Info().current_h * 0.7)
 ASTEROIDS_SPAWN_SPOTS = [
 	[-WIDTH * 0.25, -HEIGHT * 0.25],
 	[-WIDTH * 0.25,  0            ],
