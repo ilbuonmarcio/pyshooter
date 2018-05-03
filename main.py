@@ -86,6 +86,7 @@ class Asteroid(pygame.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 		self.rect.center = self.rect.x, self.rect.y
+		self.speed = 0.9
 
 	def set_angle(self, new_angle):
 		self.angle = new_angle
@@ -109,6 +110,11 @@ class Asteroid(pygame.sprite.Sprite):
 
 		self.set_angle(new_asteroid_angle)
 
+	def move_into_player(self):
+		dtime = clock.get_time()
+		self.rect.x -= math.sin(math.radians(self.angle)) * dtime
+		self.rect.y -= math.cos(math.radians(self.angle)) * dtime
+
 
 class AsteroidManager:
 
@@ -116,18 +122,19 @@ class AsteroidManager:
 		self.asteroids = asteroids
 
 	def manage(self):
-		self.move_asteroids()
 		self.rotate_asteroids()
+		self.move_asteroids_into_player()
 
-	def move_asteroids(self):
-		pass
+	def move_asteroids_into_player(self):
+		for asteroid in asteroids:
+			asteroid.move_into_player()
 
 	def rotate_asteroids(self):
 		for asteroid in self.asteroids:
 			asteroid.rotate_by_player_position()
 
 
-class InputManager:
+class PlayerInputManager:
 
 	def __init__(self, player):
 		self.player = player
@@ -190,7 +197,7 @@ asteroids = [
 asteroids_group = pygame.sprite.Group(asteroids)
 
 
-input_manager = InputManager(player)
+player_input_manager = PlayerInputManager(player)
 asteroids_manager = AsteroidManager(asteroids_group)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
@@ -208,7 +215,7 @@ while not game_ended:
 			if event.key == K_ESCAPE:
 				game_ended = True
 
-	input_manager.handle_keyboard()
+	player_input_manager.handle_keyboard()
 	asteroids_manager.manage()
 
 	window_surface.fill(BG_COLOR)
