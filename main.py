@@ -61,10 +61,6 @@ class Player(pygame.sprite.Sprite):
 
 		self._keep_player_into_screen()
 
-	def rotate(self, dangle):
-		self.angle += dangle
-		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
-
 	def set_angle(self, new_angle):
 		self.angle = new_angle
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
@@ -90,8 +86,8 @@ class Asteroid(pygame.sprite.Sprite):
 		self.rect.y = y
 		self.rect.center = self.rect.x, self.rect.y
 
-	def rotate(self, dangle):
-		self.angle += dangle
+	def set_angle(self, new_angle):
+		self.angle = new_angle
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
 
@@ -169,6 +165,7 @@ asteroids_group = pygame.sprite.Group(asteroids)
 
 
 input_manager = InputManager(player)
+asteroids_manager = AsteroidManager(asteroids_group)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
