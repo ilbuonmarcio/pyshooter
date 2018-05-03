@@ -20,8 +20,8 @@ def scale_image(image, factor):
 	return pygame.transform.scale(
 		image,
 		(
-			image.get_rect().width * factor,
-			image.get_rect().height * factor
+			int(image.get_rect().width * factor),
+			int(image.get_rect().height * factor)
 		)
 	)
 
@@ -80,6 +80,31 @@ class Player(pygame.sprite.Sprite):
 			self.rect.y = HEIGHT - self.rect.height
 
 
+class Asteroid(pygame.sprite.Sprite):
+
+	def __init__(self, image, x, y):
+		pygame.sprite.Sprite.__init__(self)
+		self.image = scale_image(image, random.choice([0.8, 1.0, 1.2, 1.4, 1.7]))
+		self.rect = self.image.get_rect()
+		self.rect.x = x
+		self.rect.y = y
+		self.rect.center = self.rect.x, self.rect.y
+
+	def rotate(self, dangle):
+		self.angle += dangle
+		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
+
+
+class AsteroidManager:
+
+	def __init__(self, asteroids):
+		self.asteroids = asteroids
+
+	def move_asteroids(self):
+		for asteroid in asteroids:
+			print(asteroid.rect.x, asteroid.rect.y)
+
+
 class InputManager:
 
 	def __init__(self, player):
@@ -130,6 +155,19 @@ player_image = scale_image(player_image, 4)
 player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
 
+asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
+num_asteroids = 8
+asteroids = [
+	Asteroid(
+		asteroid_image,
+		random.randint(0, WIDTH),
+		random.randint(0, HEIGHT)
+	) for _ in range(0, num_asteroids)
+]
+
+asteroids_group = pygame.sprite.Group(asteroids)
+
+
 input_manager = InputManager(player)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
@@ -151,10 +189,8 @@ while not game_ended:
 
 	window_surface.fill(BG_COLOR)
 
-	# game_manager.DEBUG_show_player_ray()
-
 	player_group.draw(window_surface)
-
+	asteroids_group.draw(window_surface)
 
 	pygame.display.update()
 	clock.tick(FPS)
