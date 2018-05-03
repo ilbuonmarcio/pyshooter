@@ -56,12 +56,45 @@ class Player(pygame.sprite.Sprite):
 		self.angle = new_angle
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
+
+class GameManager:
+
+	def __init__(self, player):
+		self.player = player
+
+	def handle_keyboard(self):
+		self.set_angle_by_mouse_position()
+
+	def set_angle_by_mouse_position(self):
+		mouse_position = pygame.mouse.get_pos()
+		adiacent = self.player.rect.centerx - mouse_position[0]
+		opposite = self.player.rect.centery - mouse_position[1]
+
+		if opposite == 0:
+			new_player_angle = 0
+		elif opposite < 0:
+			new_player_angle = 180 + math.degrees(
+				math.atan(adiacent / opposite)
+			)
+		else:
+			new_player_angle = math.degrees(
+				math.atan(adiacent / opposite)
+			)
+
+		self.player.set_angle(new_player_angle)
+
+	def DEBUG_show_player_ray(self):
+		pygame.draw.line(window_surface, (255, 0, 0), (player.rect.centerx, player.rect.centery), (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
+
+
 player_image = pygame.image.load(os.getcwd() + '/sprites/players/player.png')
 player_image = scale_image(player_image, 4)
 
 
 player = Player(player_image, WIDTH//2, HEIGHT//2, 10, 0)
 player_group = pygame.sprite.GroupSingle(player)
+
+game_manager = GameManager(player)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
@@ -78,12 +111,14 @@ while not game_ended:
 			if event.key == K_ESCAPE:
 				game_ended = True
 
-
-	player.rotate(0.5)
+	game_manager.handle_keyboard()
 
 	window_surface.fill(BG_COLOR)
 
+	# game_manager.DEBUG_show_player_ray()
+
 	player_group.draw(window_surface)
+
 
 	pygame.display.update()
 	clock.tick(FPS)
