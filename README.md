@@ -1,10 +1,19 @@
 # pyshooter
 
-!! ``This project is having a complete rewriting, in order to play use old.py instead of main.py``!!
-
 ### Requirements
 - Python 2.x or 3.x
-- pygame library installed
+- pygame library installed, if you don't have it already
+
+### To run the game:
+
+It's as easy as `python main.py` ;) :100: :beer:
+
+And if you wanna contribute, I surely will appreciate the effort!
+
+It's as easy as sending a pull request! :)
+- - -
+
+## (OLD VERSION)
 
 ### Commands
 - Escape/F4 to exit
@@ -24,6 +33,6 @@ Open a terminal in the project's directory and execute the following command:
 - debug nolagom --> Show debug info without lagometer
 - extreme --> When a bug becomes a cool feature... :D
 
-Hope you enjoy this **little and especially messy** project!
+-Hope you enjoy this **little and especially messy** project!
 
-If you wanna contribute, I appreciate! It's as easy as sending a pull request! :)
+- - -
