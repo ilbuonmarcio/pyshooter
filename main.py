@@ -43,7 +43,7 @@ ASTEROIDS_SPAWN_SPOTS = [
 	[            0, -HEIGHT * 0.25]
 ]
 
-FPS = 60
+FPS = 240
 BG_COLOR = (51, 51, 51)
 
 
@@ -277,12 +277,13 @@ class PlayerInputManager:
 
 
 player_image = pygame.image.load(os.getcwd() + '/sprites/players/player.png')
-player_image = scale_image(player_image, 4)
+player_image = scale_image(player_image, 2.5)
 
 player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
 
 bullet_image = pygame.image.load(os.getcwd() + '/sprites/objects/fire.png')
+bullet_image = scale_image(bullet_image, 0.6)
 bullets_group = pygame.sprite.Group()
 
 asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
@@ -326,6 +327,8 @@ while not game_ended:
 	player_group.draw(window_surface)
 	asteroids_group.draw(window_surface)
 	bullets_group.draw(window_surface)
+
+	pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__} - {clock.get_fps()}")
 
 	pygame.display.update()
 	clock.tick(FPS)
