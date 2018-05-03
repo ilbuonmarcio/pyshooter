@@ -45,8 +45,19 @@ class Player(pygame.sprite.Sprite):
 		self.speed = speed
 		self.angle = angle
 
-	def move(self):
-		pass
+	def move(self, direction):
+		if direction in ('up', 'down', 'left', 'right'):
+			dtime = clock.get_time()
+			if direction == 'up':
+				self.rect.y -= self.speed * dtime
+			if direction == 'down':
+				self.rect.y += self.speed * dtime
+			if direction == 'left':
+				self.rect.x -= self.speed * dtime
+			if direction == 'right':
+				self.rect.x += self.speed * dtime
+		else:
+			raise Exception('InvalidDirectionException')
 
 	def rotate(self, dangle):
 		self.angle += dangle
@@ -64,6 +75,7 @@ class GameManager:
 
 	def handle_keyboard(self):
 		self.set_angle_by_mouse_position()
+		self.handle_keyboard_player_inputs()
 
 	def set_angle_by_mouse_position(self):
 		mouse_position = pygame.mouse.get_pos()
@@ -83,6 +95,18 @@ class GameManager:
 
 		self.player.set_angle(new_player_angle)
 
+	def handle_keyboard_player_inputs(self):
+		dtime = clock.get_time()
+		keys_pressed = pygame.key.get_pressed()
+		if keys_pressed[K_w]:
+			self.player.move('up')
+		if keys_pressed[K_s]:
+			self.player.move('down')
+		if keys_pressed[K_a]:
+			self.player.move('left')
+		if keys_pressed[K_d]:
+			self.player.move('right')
+
 	def DEBUG_show_player_ray(self):
 		pygame.draw.line(window_surface, (255, 0, 0), (player.rect.centerx, player.rect.centery), (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
 
@@ -91,7 +115,7 @@ player_image = pygame.image.load(os.getcwd() + '/sprites/players/player.png')
 player_image = scale_image(player_image, 4)
 
 
-player = Player(player_image, WIDTH//2, HEIGHT//2, 10, 0)
+player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
 
 game_manager = GameManager(player)
