@@ -44,6 +44,7 @@ class Player(pygame.sprite.Sprite):
 		self.rect.center = self.rect.x, self.rect.y
 		self.speed = speed
 		self.angle = angle
+		self.bullet_speed = 1.5
 
 	def move(self, direction):
 		if direction in ('up', 'down', 'left', 'right'):
@@ -75,6 +76,59 @@ class Player(pygame.sprite.Sprite):
 		if self.rect.y + self.rect.height > HEIGHT:
 			self.rect.y = HEIGHT - self.rect.height
 
+	def fire(self):
+		bullets_group.add(Bullet(bullet_image, self.rect.centerx, self.rect.centery, self.angle, self.bullet_speed))
+
+
+class Bullet(pygame.sprite.Sprite):
+
+	def __init__(self, image, x, y, angle, speed):
+		pygame.sprite.Sprite.__init__(self)
+		self.default_image = image
+		self.rect = self.default_image.get_rect()
+		self.rect.x = x
+		self.rect.y = y
+		self.speed = speed
+		self.angle = angle
+		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
+
+	def move(self):
+		dtime = clock.get_time()
+		self.rect.x -= math.sin(math.radians(self.angle)) * dtime
+		self.rect.y -= math.cos(math.radians(self.angle)) * dtime
+
+
+class BulletManager:
+
+	def __init__(self, bullets):
+		self.bullets = bullets
+
+	def manage(self):
+		self.move_bullets()
+		self.destroy_hitted_asteroids()
+		self.delete_if_out_of_screen()
+
+	def move_bullets(self):
+		for bullet in self.bullets:
+			bullet.move()
+
+	def delete_if_out_of_screen(self):
+		for bullet in self.bullets:
+			if bullet.rect.x + bullet.rect.width < 0:
+				self.bullets.remove(bullet)
+			elif bullet.rect.x > WIDTH:
+				self.bullets.remove(bullet)
+			elif bullet.rect.y + bullet.rect.height < 0:
+				self.bullets.remove(bullet)
+			elif bullet.rect.y > HEIGHT:
+				self.bullets.remove(bullet)
+
+	def destroy_hitted_asteroids(self):
+		for bullet in self.bullets:
+			for asteroid in pygame.sprite.spritecollide(bullet, asteroids_group, False):
+				asteroid.respawn()
+
+
 
 class Asteroid(pygame.sprite.Sprite):
 
@@ -86,7 +140,7 @@ class Asteroid(pygame.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 		self.rect.center = self.rect.x, self.rect.y
-		self.speed = 0.9
+		self.speed = 0.5
 
 	def set_angle(self, new_angle):
 		self.angle = new_angle
@@ -112,8 +166,14 @@ class Asteroid(pygame.sprite.Sprite):
 
 	def move_into_player(self):
 		dtime = clock.get_time()
-		self.rect.x -= math.sin(math.radians(self.angle)) * dtime
-		self.rect.y -= math.cos(math.radians(self.angle)) * dtime
+		self.rect.x -= math.sin(math.radians(self.angle)) * self.speed * dtime
+		self.rect.y -= math.cos(math.radians(self.angle)) * self.speed * dtime
+
+	def respawn(self):
+		self.rect = self.image.get_rect()
+		self.rect.x = random.choice([_ for _ in range(-200, WIDTH + 200, 50)])
+		self.rect.y = random.choice([_ for _ in range(-200, WIDTH + 200, 50)])
+		self.rect.center = self.rect.x, self.rect.y
 
 
 class AsteroidManager:
@@ -140,8 +200,9 @@ class PlayerInputManager:
 		self.player = player
 
 	def handle_keyboard(self):
-		self.set_player_angle_by_mouse_position()
 		self.handle_keyboard_player_inputs()
+		self.handle_mouse_player_inputs()
+		self.set_player_angle_by_mouse_position()
 
 	def set_player_angle_by_mouse_position(self):
 		mouse_position = pygame.mouse.get_pos()
@@ -173,6 +234,11 @@ class PlayerInputManager:
 		if keys_pressed[K_d]:
 			self.player.move('right')
 
+	def handle_mouse_player_inputs(self):
+		mouse_buttons_pressed = pygame.mouse.get_pressed()
+		if mouse_buttons_pressed[0]:
+			self.player.fire()
+
 	def DEBUG_show_player_ray(self):
 		pygame.draw.line(window_surface, (255, 0, 0), (player.rect.centerx, player.rect.centery), (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
 
@@ -180,9 +246,11 @@ class PlayerInputManager:
 player_image = pygame.image.load(os.getcwd() + '/sprites/players/player.png')
 player_image = scale_image(player_image, 4)
 
-
 player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
+
+bullet_image = pygame.image.load(os.getcwd() + '/sprites/objects/fire.png')
+bullets_group = pygame.sprite.Group()
 
 asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
 num_asteroids = 8
@@ -199,6 +267,7 @@ asteroids_group = pygame.sprite.Group(asteroids)
 
 player_input_manager = PlayerInputManager(player)
 asteroids_manager = AsteroidManager(asteroids_group)
+bullets_manager = BulletManager(bullets_group)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
@@ -217,11 +286,13 @@ while not game_ended:
 
 	player_input_manager.handle_keyboard()
 	asteroids_manager.manage()
+	bullets_manager.manage()
 
 	window_surface.fill(BG_COLOR)
 
 	player_group.draw(window_surface)
 	asteroids_group.draw(window_surface)
+	bullets_group.draw(window_surface)
 
 	pygame.display.update()
 	clock.tick(FPS)
