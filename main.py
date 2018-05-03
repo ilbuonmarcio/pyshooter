@@ -4,7 +4,7 @@ import os
 import pygame
 from pygame.locals import *
 
-__version__ = "ALPHA"
+__version__ = "BETA"
 __author__ = "github.com@marcioz98"
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -12,6 +12,37 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
 
 GAME_RES = WIDTH, HEIGHT = 1920, 1080
+ASTEROIDS_SPAWN_SPOTS = [
+	[-WIDTH * 0.25, -HEIGHT * 0.25],
+	[-WIDTH * 0.25,  0            ],
+	[-WIDTH * 0.25,  HEIGHT * 0.25],
+	[-WIDTH * 0.25,  HEIGHT * 0.5 ],
+	[-WIDTH * 0.25,  HEIGHT * 0.75],
+	[-WIDTH * 0.25,  HEIGHT       ],
+	[-WIDTH * 0.25,  HEIGHT * 1.25],
+
+	[-WIDTH * 0.25,  HEIGHT * 1.25],
+	[            0,  HEIGHT * 1.25],
+	[ WIDTH * 0.25,  HEIGHT * 1.25],
+	[  WIDTH * 0.5,  HEIGHT * 1.25],
+	[ WIDTH * 0.75,  HEIGHT * 1.25],
+	[        WIDTH,  HEIGHT * 1.25],
+	[ WIDTH * 1.25,  HEIGHT * 1.25],
+
+	[ WIDTH * 1.25,  HEIGHT       ],
+	[ WIDTH * 1.25,  HEIGHT * 0.75],
+	[ WIDTH * 1.25,  HEIGHT * 0.5 ],
+	[ WIDTH * 1.25,  HEIGHT * 0.25],
+	[ WIDTH * 1.25,  0            ],
+	[ WIDTH * 1.25, -HEIGHT * 0.25],
+
+	[ WIDTH       , -HEIGHT * 0.25],
+	[ WIDTH * 0.75, -HEIGHT * 0.25],
+	[ WIDTH * 0.5 , -HEIGHT * 0.25],
+	[ WIDTH * 0.25, -HEIGHT * 0.25],
+	[            0, -HEIGHT * 0.25]
+]
+
 FPS = 60
 BG_COLOR = (51, 51, 51)
 
@@ -44,7 +75,7 @@ class Player(pygame.sprite.Sprite):
 		self.rect.center = self.rect.x, self.rect.y
 		self.speed = speed
 		self.angle = angle
-		self.bullet_speed = 1.5
+		self.bullet_speed = 1.3
 
 	def move(self, direction):
 		if direction in ('up', 'down', 'left', 'right'):
@@ -127,6 +158,7 @@ class BulletManager:
 		for bullet in self.bullets:
 			for asteroid in pygame.sprite.spritecollide(bullet, asteroids_group, False):
 				asteroid.respawn()
+				self.bullets.remove(bullet)
 
 
 
@@ -171,8 +203,9 @@ class Asteroid(pygame.sprite.Sprite):
 
 	def respawn(self):
 		self.rect = self.image.get_rect()
-		self.rect.x = random.choice([_ for _ in range(-200, WIDTH + 200, 50)])
-		self.rect.y = random.choice([_ for _ in range(-200, WIDTH + 200, 50)])
+		spot = random.choice(ASTEROIDS_SPAWN_SPOTS)
+		self.rect.x = spot[0]
+		self.rect.y = spot[1]
 		self.rect.center = self.rect.x, self.rect.y
 
 
