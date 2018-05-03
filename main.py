@@ -59,6 +59,8 @@ class Player(pygame.sprite.Sprite):
 		else:
 			raise Exception('InvalidDirectionException')
 
+		self._keep_player_into_screen()
+
 	def rotate(self, dangle):
 		self.angle += dangle
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
@@ -66,6 +68,16 @@ class Player(pygame.sprite.Sprite):
 	def set_angle(self, new_angle):
 		self.angle = new_angle
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
+
+	def _keep_player_into_screen(self):
+		if self.rect.x < 0:
+			self.rect.x = 0
+		if self.rect.x + self.rect.width > WIDTH:
+			self.rect.x = WIDTH - self.rect.width
+		if self.rect.y < 0:
+			self.rect.y = 0
+		if self.rect.y + self.rect.height > HEIGHT:
+			self.rect.y = HEIGHT - self.rect.height
 
 
 class InputManager:
