@@ -68,7 +68,7 @@ class Player(pygame.sprite.Sprite):
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
 
-class GameManager:
+class InputManager:
 
 	def __init__(self, player):
 		self.player = player
@@ -118,7 +118,7 @@ player_image = scale_image(player_image, 4)
 player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
 
-game_manager = GameManager(player)
+input_manager = InputManager(player)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
@@ -135,7 +135,7 @@ while not game_ended:
 			if event.key == K_ESCAPE:
 				game_ended = True
 
-	game_manager.handle_keyboard()
+	input_manager.handle_keyboard()
 
 	window_surface.fill(BG_COLOR)
 
