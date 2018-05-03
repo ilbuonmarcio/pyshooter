@@ -80,7 +80,8 @@ class Asteroid(pygame.sprite.Sprite):
 
 	def __init__(self, image, x, y):
 		pygame.sprite.Sprite.__init__(self)
-		self.image = scale_image(image, random.choice([0.8, 1.0, 1.2, 1.4, 1.7]))
+		self.default_image = scale_image(image, random.choice([0.8, 1.0, 1.2, 1.4, 1.7]))
+		self.image = self.default_image
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
@@ -90,15 +91,40 @@ class Asteroid(pygame.sprite.Sprite):
 		self.angle = new_angle
 		self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
+	def rotate_by_player_position(self):
+		player_position = player.rect.centerx, player.rect.centery
+		adiacent = self.rect.centerx - player_position[0]
+		opposite = self.rect.centery - player_position[1]
+
+		if opposite == 0:
+			new_asteroid_angle = 0
+		elif opposite < 0:
+			new_asteroid_angle = 180 + math.degrees(
+				math.atan(adiacent / opposite)
+			)
+		else:
+			new_asteroid_angle = math.degrees(
+				math.atan(adiacent / opposite)
+			)
+
+		self.set_angle(new_asteroid_angle)
+
 
 class AsteroidManager:
 
 	def __init__(self, asteroids):
 		self.asteroids = asteroids
 
+	def manage(self):
+		self.move_asteroids()
+		self.rotate_asteroids()
+
 	def move_asteroids(self):
-		for asteroid in asteroids:
-			print(asteroid.rect.x, asteroid.rect.y)
+		pass
+
+	def rotate_asteroids(self):
+		for asteroid in self.asteroids:
+			asteroid.rotate_by_player_position()
 
 
 class InputManager:
@@ -107,10 +133,10 @@ class InputManager:
 		self.player = player
 
 	def handle_keyboard(self):
-		self.set_angle_by_mouse_position()
+		self.set_player_angle_by_mouse_position()
 		self.handle_keyboard_player_inputs()
 
-	def set_angle_by_mouse_position(self):
+	def set_player_angle_by_mouse_position(self):
 		mouse_position = pygame.mouse.get_pos()
 		adiacent = self.player.rect.centerx - mouse_position[0]
 		opposite = self.player.rect.centery - mouse_position[1]
@@ -183,6 +209,7 @@ while not game_ended:
 				game_ended = True
 
 	input_manager.handle_keyboard()
+	asteroids_manager.manage()
 
 	window_surface.fill(BG_COLOR)
 
