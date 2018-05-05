@@ -121,7 +121,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.center = self.rect.x, self.rect.y
         self.speed = speed
-        self.angle = angle
+        self.angle = angle + random.random() * random.randint(-3, 3)
         self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
     def move(self):
@@ -283,11 +283,12 @@ player_image = scale_image(player_image, 2.5)
 player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
 
-bullet_image = pygame.image.load(os.getcwd() + '/sprites/objects/fire.png')
-bullet_image = scale_image(bullet_image, 1.3)
+bullet_image = pygame.image.load(os.getcwd() + '/sprites/objects/bullet.png')
+bullet_image = scale_image(bullet_image, 4)
 bullets_group = pygame.sprite.Group()
 
 asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
+asteroid_image = scale_image(asteroid_image, 2)
 num_asteroids = 8
 asteroids = [
     Asteroid(
