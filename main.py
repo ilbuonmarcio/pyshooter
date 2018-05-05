@@ -11,7 +11,7 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 pygame.init()
 
-GAME_RES = WIDTH, HEIGHT = int(pygame.display.Info().current_w * 0.7), int(pygame.display.Info().current_h * 0.7)
+GAME_RES = WIDTH, HEIGHT = int(pygame.display.Info().current_w * 0.5), int(pygame.display.Info().current_h * 0.5)
 ASTEROIDS_SPAWN_SPOTS = [
     [-WIDTH * 0.25, -HEIGHT * 0.25],
     [-WIDTH * 0.25,  0            ],
@@ -121,13 +121,13 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.center = self.rect.x, self.rect.y
         self.speed = speed
-        self.angle = angle + random.random() * random.randint(-3, 3)
+        self.angle = angle + random.random() * random.randint(-3, 4)
         self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
     def move(self):
         dtime = clock.get_time()
-        self.rect.x -= math.sin(math.radians(self.angle)) * dtime
-        self.rect.y -= math.cos(math.radians(self.angle)) * dtime
+        self.rect.x -= math.sin(math.radians(self.angle)) * dtime * self.speed
+        self.rect.y -= math.cos(math.radians(self.angle)) * dtime * self.speed
 
 
 class BulletManager:
@@ -233,7 +233,7 @@ class PlayerInputManager:
     def __init__(self, player):
         self.player = player
 
-    def handle_keyboard(self):
+    def manage(self):
         self.handle_keyboard_player_inputs()
         self.handle_mouse_player_inputs()
         self.set_player_angle_by_mouse_position()
@@ -277,6 +277,66 @@ class PlayerInputManager:
         pygame.draw.line(window_surface, (255, 0, 0), (player.rect.centerx, player.rect.centery), (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
 
 
+class BackgroundMovingObject:
+
+    def __init__(self):
+        self.x = random.randint(0, WIDTH)
+        self.y = random.randint(0, HEIGHT)
+        self.speed = random.randrange(1, 3)
+        self.angle = random.randint(0, 360)
+
+    def move(self):
+        dtime = clock.get_time()
+        self.x -= math.sin(math.radians(self.angle)) * dtime * self.speed
+        self.y -= math.cos(math.radians(self.angle)) * dtime * self.speed
+
+
+class Star(BackgroundMovingObject):
+
+    def __init__(self):
+        BackgroundMovingObject.__init__(self)
+        self.size = random.randint(2, 8)
+        self.color = (
+            random.randint(230, 255),
+            random.randint(230, 255),
+            random.randint(230, 255)
+        )
+
+    def move(self):
+        BackgroundMovingObject.move(self)
+
+        if self.x + self.size < 0:
+            self.x = WIDTH
+        if self.x > WIDTH:
+            self.x = 0
+        if self.y + self.size < 0:
+            self.y = HEIGHT
+        if self.y > HEIGHT:
+            self.y = 0
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.color, (int(self.x), int(self.y), self.size, self.size))
+
+
+
+class BackgroundEffectsManager:
+
+    def __init__(self, num_stars):
+        self.num_stars = num_stars
+        self.stars = [Star() for _ in range(0, self.num_stars)]
+
+    def manage(self):
+        self.move()
+
+    def move(self):
+        for star in self.stars:
+            star.move()
+
+    def draw(self, surface):
+        for star in self.stars:
+            star.draw(surface)
+
+
 player_image = pygame.image.load(os.getcwd() + '/sprites/players/player.png')
 player_image = scale_image(player_image, 2.5)
 
@@ -304,6 +364,7 @@ asteroids_group = pygame.sprite.Group(asteroids)
 player_input_manager = PlayerInputManager(player)
 asteroids_manager = AsteroidManager(asteroids_group)
 bullets_manager = BulletManager(bullets_group)
+background_effects_manager = BackgroundEffectsManager(200)
 
 window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
@@ -320,11 +381,14 @@ while not game_ended:
             if event.key == K_ESCAPE:
                 game_ended = True
 
-    player_input_manager.handle_keyboard()
+    player_input_manager.manage()
     asteroids_manager.manage()
     bullets_manager.manage()
+    background_effects_manager.manage()
 
     window_surface.fill(BG_COLOR)
+
+    background_effects_manager.draw(window_surface)
 
     bullets_group.draw(window_surface)
     player_group.draw(window_surface)
