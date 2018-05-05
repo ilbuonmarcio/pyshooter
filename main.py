@@ -119,6 +119,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.default_image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.rect.center = self.rect.x, self.rect.y
         self.speed = speed
         self.angle = angle
         self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
@@ -283,7 +284,7 @@ player = Player(player_image, WIDTH//2, HEIGHT//2, 1.25, 0)
 player_group = pygame.sprite.GroupSingle(player)
 
 bullet_image = pygame.image.load(os.getcwd() + '/sprites/objects/fire.png')
-bullet_image = scale_image(bullet_image, 0.6)
+bullet_image = scale_image(bullet_image, 1.3)
 bullets_group = pygame.sprite.Group()
 
 asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
@@ -324,9 +325,9 @@ while not game_ended:
 
     window_surface.fill(BG_COLOR)
 
+    bullets_group.draw(window_surface)
     player_group.draw(window_surface)
     asteroids_group.draw(window_surface)
-    bullets_group.draw(window_surface)
 
     pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__} - {clock.get_fps()}")
 
