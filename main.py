@@ -282,7 +282,7 @@ class BackgroundMovingObject:
     def __init__(self):
         self.x = random.randint(0, WIDTH)
         self.y = random.randint(0, HEIGHT)
-        self.speed = random.randrange(1, 3)
+        self.speed = random.randrange(1, 3) / 20
         self.angle = random.randint(0, 360)
 
     def move(self):
