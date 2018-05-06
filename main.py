@@ -60,6 +60,14 @@ def scale_image(image, factor):
         )
     )
 
+def scale_image_to_specific_resolution(image, resolution):
+    return pygame.transform.scale(
+            image,
+            (
+                resolution[0],
+                resolution[1]
+            )
+        )
 
 def rotate_image_centered(image, rect, angle):
     rotated_image = pygame.transform.rotate(image, angle)
