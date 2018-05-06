@@ -198,7 +198,7 @@ class Explosion(pygame.sprite.Sprite):
                 self.image = self.images[self.current_animation_index]
             else:
                 explosion_group.remove(self)
-        
+
 
 
 class ExplosionManager:
@@ -295,7 +295,7 @@ class PlayerInputManager:
         mouse_position = pygame.mouse.get_pos()
         adiacent = self.player.rect.centerx - mouse_position[0]
         opposite = self.player.rect.centery - mouse_position[1]
-        
+
         if opposite < 0:
             new_player_angle = 180 + math.degrees(
                 math.atan(adiacent / opposite)
