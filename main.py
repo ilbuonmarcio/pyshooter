@@ -392,6 +392,8 @@ class BackgroundEffectsManager:
         for star in self.stars:
             star.draw(surface)
 
+# ghost_surface = pygame.Surface((WIDTH, HEIGHT), SRCALPHA)
+# ghost_surface.fill((0, 0, 0, 50))
 
 player_image = pygame.image.load(os.getcwd() + '/sprites/players/player.png')
 player_image = scale_image(player_image, 2.5)
@@ -460,6 +462,7 @@ while not game_ended:
     background_effects_manager.manage()
 
     window_surface.fill(BG_COLOR)
+    # window_surface.blit(ghost_surface, (0, 0))
 
     background_effects_manager.draw(window_surface)
 
