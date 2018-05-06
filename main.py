@@ -45,9 +45,9 @@ ASTEROIDS_SPAWN_SPOTS = [
 
 FPS = 240
 BG_COLOR = (
-    random.randint(51, 223),
-    random.randint(51, 223),
-    random.randint(51, 223)
+    random.randint(51, 123),
+    random.randint(51, 123),
+    random.randint(51, 123)
 )
 
 
