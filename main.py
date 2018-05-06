@@ -246,17 +246,21 @@ class PlayerInputManager:
         mouse_position = pygame.mouse.get_pos()
         adiacent = self.player.rect.centerx - mouse_position[0]
         opposite = self.player.rect.centery - mouse_position[1]
-
-        if opposite == 0:
-            new_player_angle = 0
-        elif opposite < 0:
+        
+        if opposite < 0:
             new_player_angle = 180 + math.degrees(
                 math.atan(adiacent / opposite)
             )
-        else:
+        elif opposite > 0:
             new_player_angle = math.degrees(
                 math.atan(adiacent / opposite)
             )
+        elif opposite == 0:
+            if adiacent >= 0 :
+                new_player_angle = 90
+            else:
+                new_player_angle = -90
+            print(new_player_angle)
 
         self.player.set_angle(new_player_angle)
 
