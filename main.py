@@ -434,18 +434,17 @@ explosion_group = pygame.sprite.Group()
 
 asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
 asteroid_image = scale_image(asteroid_image, 2)
-num_asteroids = 8
+num_asteroids = 18
 asteroids = [
     Asteroid(
         asteroid_image,
-        random.randint(0, WIDTH),
-        random.randint(0, HEIGHT)
+        *random.choice(ASTEROIDS_SPAWN_SPOTS),
     ) for _ in range(0, num_asteroids)
 ]
 
 asteroids_group = pygame.sprite.Group(asteroids)
 
-game_settings = GameSettings(invincible=False)
+game_settings = GameSettings(invincible=True)
 player_manager = PlayerManager(player, game_settings)
 explosion_manager = ExplosionManager(explosion_group)
 asteroids_manager = AsteroidManager(asteroids_group)
