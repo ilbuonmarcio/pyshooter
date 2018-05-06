@@ -200,6 +200,11 @@ class Explosion(pygame.sprite.Sprite):
                 explosion_group.remove(self)
 
 
+class GameSettings:
+
+    def __init__(self, invincible=False):
+        self.invincible = invincible
+
 
 class ExplosionManager:
 
@@ -281,15 +286,17 @@ class AsteroidManager:
             asteroid.rotate_by_player_position()
 
 
-class PlayerInputManager:
+class PlayerManager:
 
-    def __init__(self, player):
+    def __init__(self, player, game_settings):
         self.player = player
+        self.game_settings = game_settings
 
     def manage(self):
         self.handle_keyboard_player_inputs()
         self.handle_mouse_player_inputs()
         self.set_player_angle_by_mouse_position()
+        self.kill_if_touched()
 
     def set_player_angle_by_mouse_position(self):
         mouse_position = pygame.mouse.get_pos()
@@ -328,6 +335,11 @@ class PlayerInputManager:
         mouse_buttons_pressed = pygame.mouse.get_pressed()
         if mouse_buttons_pressed[0]:
             self.player.fire()
+
+    def kill_if_touched(self):
+        if len(pygame.sprite.spritecollide(self.player, asteroids_group, False, collided=pygame.sprite.collide_circle_ratio(0.5))) > 0 and not self.game_settings.invincible:
+            global game_ended
+            game_ended = True
 
     def DEBUG_show_player_ray(self):
         pygame.draw.line(window_surface, (255, 0, 0), (player.rect.centerx, player.rect.centery), (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
@@ -433,8 +445,8 @@ asteroids = [
 
 asteroids_group = pygame.sprite.Group(asteroids)
 
-
-player_input_manager = PlayerInputManager(player)
+game_settings = GameSettings(invincible=False)
+player_manager = PlayerManager(player, game_settings)
 explosion_manager = ExplosionManager(explosion_group)
 asteroids_manager = AsteroidManager(asteroids_group)
 bullets_manager = BulletManager(bullets_group)
@@ -455,7 +467,7 @@ while not game_ended:
             if event.key == K_ESCAPE:
                 game_ended = True
 
-    player_input_manager.manage()
+    player_manager.manage()
     explosion_manager.manage()
     asteroids_manager.manage()
     bullets_manager.manage()
