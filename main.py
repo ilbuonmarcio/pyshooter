@@ -44,7 +44,11 @@ ASTEROIDS_SPAWN_SPOTS = [
 ]
 
 FPS = 240
-BG_COLOR = (51, 51, 51)
+BG_COLOR = (
+    random.randint(51, 223),
+    random.randint(51, 223),
+    random.randint(51, 223)
+)
 
 
 def scale_image(image, factor):
