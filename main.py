@@ -166,6 +166,45 @@ class BulletManager:
                 self.bullets.remove(bullet)
 
 
+class Explosion(pygame.sprite.Sprite):
+
+    def __init__(self, x, y, size, animation_time=0.25):
+        pygame.sprite.Sprite.__init__(self)
+        self.images = explosion_images
+        self.current_animation_index = 0
+        self.image = self.images[self.current_animation_index]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.animation_time = animation_time
+        self.delta_animation_time = self.animation_time / len(self.images)
+        self.current_animation_time = 0
+
+    def animate(self):
+        t = clock.get_time() / 1000
+        self.current_animation_time += t
+        if self.current_animation_time >= self.delta_animation_time:
+            self.current_animation_time -= self.delta_animation_time
+            self.current_animation_index += 1
+            if self.current_animation_index < len(self.images):
+                self.image = self.images[self.current_animation_index]
+            else:
+                explosion_group.remove(self)
+        
+
+
+class ExplosionManager:
+
+    def __init__(self, explosion_group):
+        self.explosions = explosion_group
+
+    def manage(self):
+        self.animate_explosions()
+
+    def animate_explosions(self):
+        for explosion in self.explosions:
+            explosion.animate()
+
 
 class Asteroid(pygame.sprite.Sprite):
 
@@ -178,6 +217,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.center = self.rect.x, self.rect.y
         self.speed = 0.5
+        self.alive = True
 
     def set_angle(self, new_angle):
         self.angle = new_angle
@@ -207,6 +247,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.y -= math.cos(math.radians(self.angle)) * self.speed * dtime
 
     def respawn(self):
+        explosion_group.add(Explosion(self.rect.x, self.rect.y, self.rect.width))
         self.rect = self.image.get_rect()
         spot = random.choice(ASTEROIDS_SPAWN_SPOTS)
         self.rect.x = spot[0]
@@ -260,7 +301,6 @@ class PlayerInputManager:
                 new_player_angle = 90
             else:
                 new_player_angle = -90
-            print(new_player_angle)
 
         self.player.set_angle(new_player_angle)
 
@@ -355,6 +395,21 @@ bullet_image = pygame.image.load(os.getcwd() + '/sprites/objects/bullet.png')
 bullet_image = scale_image(bullet_image, 4)
 bullets_group = pygame.sprite.Group()
 
+explosion_images = [
+            scale_image(pygame.image.load(filename), 2)
+            for filename in (
+                "./sprites/effects/explosion/explosion0.png",
+                "./sprites/effects/explosion/explosion1.png",
+                "./sprites/effects/explosion/explosion2.png",
+                "./sprites/effects/explosion/explosion3.png",
+                "./sprites/effects/explosion/explosion4.png",
+                "./sprites/effects/explosion/explosion5.png",
+                "./sprites/effects/explosion/explosion6.png",
+            )
+        ]
+
+explosion_group = pygame.sprite.Group()
+
 asteroid_image = pygame.image.load(os.getcwd() + '/sprites/objects/enemy.png')
 asteroid_image = scale_image(asteroid_image, 2)
 num_asteroids = 8
@@ -370,6 +425,7 @@ asteroids_group = pygame.sprite.Group(asteroids)
 
 
 player_input_manager = PlayerInputManager(player)
+explosion_manager = ExplosionManager(explosion_group)
 asteroids_manager = AsteroidManager(asteroids_group)
 bullets_manager = BulletManager(bullets_group)
 background_effects_manager = BackgroundEffectsManager(200)
@@ -390,6 +446,7 @@ while not game_ended:
                 game_ended = True
 
     player_input_manager.manage()
+    explosion_manager.manage()
     asteroids_manager.manage()
     bullets_manager.manage()
     background_effects_manager.manage()
@@ -398,6 +455,7 @@ while not game_ended:
 
     background_effects_manager.draw(window_surface)
 
+    explosion_group.draw(window_surface)
     bullets_group.draw(window_surface)
     player_group.draw(window_surface)
     asteroids_group.draw(window_surface)
