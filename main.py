@@ -11,7 +11,7 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 pygame.init()
 
-GAME_RES = WIDTH, HEIGHT = int(pygame.display.Info().current_w * 0.5), int(pygame.display.Info().current_h * 0.5)
+GAME_RES = WIDTH, HEIGHT = int(pygame.display.Info().current_w), int(pygame.display.Info().current_h)
 ASTEROIDS_SPAWN_SPOTS = [
     [-WIDTH * 0.25, -HEIGHT * 0.25],
     [-WIDTH * 0.25,  0            ],
@@ -451,7 +451,7 @@ asteroids_manager = AsteroidManager(asteroids_group)
 bullets_manager = BulletManager(bullets_group)
 background_effects_manager = BackgroundEffectsManager(200)
 
-window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF)
+window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF|FULLSCREEN)
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
 
 clock = pygame.time.Clock()
