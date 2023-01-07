@@ -1,11 +1,12 @@
 import random
 import math
+import platform
 import os
 import pygame
 from pygame.locals import *
 
 __version__ = "BETA"
-__author__ = "github.com@marcioz98"
+__author__ = "Alessandro Marchioro"
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -133,7 +134,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.center = self.rect.x, self.rect.y
         self.speed = speed
-        self.angle = angle + random.random() * random.randint(-3, 4)
+        self.angle = angle + (random.random() * random.choice([-1, 1]) * 12)
         self.image, self.rect = rotate_image_centered(self.default_image, self.rect, self.angle)
 
     def move(self):
@@ -455,6 +456,10 @@ window_surface = pygame.display.set_mode(GAME_RES, HWSURFACE|HWACCEL|DOUBLEBUF|F
 pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__}")
 
 clock = pygame.time.Clock()
+text_renderer = pygame.font.Font('fonts/FallingSky.otf', 25)
+
+
+pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__} - {clock.get_fps()}")
 
 game_ended = False
 while not game_ended:
@@ -482,9 +487,11 @@ while not game_ended:
     player_group.draw(window_surface)
     asteroids_group.draw(window_surface)
 
-    pygame.display.set_caption(f"PyShooter - Version: {__version__} - {__author__} - {clock.get_fps()}")
+    pygame.Surface.blit(window_surface, text_renderer.render("FPS: " + str(round(clock.get_fps())), True, (0, 255, 0)), (32, 32))
+    pygame.Surface.blit(window_surface, text_renderer.render("Python version: " + platform.python_version(), True, (0, 255, 0)), (32, 64))
 
     pygame.display.update()
     clock.tick(FPS)
+
 
 pygame.quit()
